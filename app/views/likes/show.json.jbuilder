@@ -1,0 +1,1 @@
+json.partial! @like, partial: 'like', as: :like
