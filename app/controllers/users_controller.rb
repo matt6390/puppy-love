@@ -1,6 +1,11 @@
 class UsersController < ApplicationController
   def index
-    @users = User.all
+    # @users = User.where(:gender => current_user.other_genders)
+    @users = User.where(["gender = ?", current_user.other_genders])
+    # @users = User.all
+
+
+
     render 'index.json.jbuilder'
   end
 

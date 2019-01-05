@@ -29,6 +29,8 @@ gem 'pry'
 gem 'money-rails'
 gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
 
+gem 'seed_dump'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
