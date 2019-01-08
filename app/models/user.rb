@@ -3,11 +3,35 @@ class User < ApplicationRecord
   validates :f_name, presence: true
   validates :l_name, presence: true
   validates :age, presence: true
+  validates :gender, presence: true
   validates :email, presence: true, uniqueness: true
   validates :email, format: { with: /@/, message: "Must be a valid email address"}
 
-  def other_genders
-    gender
+  # has_many :likes, foreign_key: "swiped_id"
+  # has_many :likes do
+  #   where(swiped_id: id, swiper_id: id)
+  # end
+
+  def likes
+    Likes.all
+  end
+
+  #Returns the desired gender based upon your gender and preference
+  def prefers
+    if preference == 0
+      return self.other_gender(gender)
+    elsif preference == 1
+      return gender
+    end
+  end
+
+  #this is used to find the other gender
+  def other_gender(gender) 
+    if gender == 0
+      return 1
+    elsif gender == 1
+      return 0
+    end
   end
 
   def friendly_created_at

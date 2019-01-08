@@ -15,7 +15,22 @@ var HomePage = {
       console.log(errors.response.data.errors);
     });
   },
-  methods: {},
+  methods: {
+    swipeLeft: function(profile) {
+      var params = {swiped_id: profile.id, status: 0};
+      axios.post("/likes", params).then(function(respose) {
+        console.log(respose.data);
+
+      }.bind(this)).catch(function(errors) {
+        console.log(errors.response.data.errors);
+      });
+
+    },
+    swipeRight: function(profile) {
+      var params = {swiped_id: profile.id, status: 1};
+      console.log(profile);
+    }
+  },
   computed: {}
 };
 
@@ -70,6 +85,7 @@ var SignupPage = {
       var params = {
         name: this.name,
         email: this.email,
+        gender: this.gender,
         password: this.password,
         password_confirmation: this.passwordConfirmation
       };
@@ -91,7 +107,7 @@ var LogoutPage = {
   created: function() {
     axios.defaults.headers.common["Authorization"] = undefined;
     localStorage.removeItem("jwt");
-    router.push("/");
+    router.push("/login");
   }
 };
 

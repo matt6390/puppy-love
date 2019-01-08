@@ -10,10 +10,11 @@ class LikesController < ApplicationController
 
   def create
     @like = Like.new(
-                      swiper_id: params[:swiper_id],
+                      swiper_id: current_user.id,
                       swiped_id: params[:swiped_id],
                       status: params[:status]
                     )
+    binding.pry
     if @like.save
       render 'show.json.jbuilder'
     else

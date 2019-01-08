@@ -1,10 +1,16 @@
 class UsersController < ApplicationController
   def index
-    # @users = User.where(:gender => current_user.other_genders)
-    @users = User.where(["gender = ?", current_user.other_genders])
-    # @users = User.all
+    #gets all users at the s
+    @all_users = User.all.where("id != ?", current_user.id)
 
-
+    #will show all-people if you are bi, but will show your preference if you have one
+    if current_user.preference != 2
+      @users = @all_users.where("gender = ?", current_user.prefers)
+    else
+      @users = @all_users
+    end
+    
+    @users = @users.shuffle
 
     render 'index.json.jbuilder'
   end
@@ -20,6 +26,7 @@ class UsersController < ApplicationController
                       email: params[:email],
                       age: params[:age],
                       gender: params[:gender],
+                      preference: params[:preference],
                       password: params[:password],
                       password_confirmation: params[:password_confirmation],
                     )
