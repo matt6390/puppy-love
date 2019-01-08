@@ -5,6 +5,7 @@ class UsersController < ApplicationController
     @likes = Like.all.where("swiped_id = ? OR swiper_id = ?", current_user.id, current_user.id )
     # binding.pry
     @all_users = current_user.clear_likes(@all_users, @likes)
+    binding.pry
     #will show all-people if you are bi, but will show your preference if you have one
     if current_user.preference != 2
       @users = @all_users.where("gender = ?", current_user.prefers)

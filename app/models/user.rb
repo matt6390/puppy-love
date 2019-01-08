@@ -9,19 +9,33 @@ class User < ApplicationRecord
 
   #this method is meant to clear out amyone you have liked, disliked, or has disliked you
   def clear_likes(people, likes)
-    new_arr = people
+    dont_want = []
     likes.each do |like|
-      #if I DIDN'T like someone, they are removed
+      #if I DISLIKED like someone, they are added to the array that will be removed
       if like.swiper_id == id && like.status == 0
-        new_arr.each do |person|
-          if person.id == like.swiped_id
-           p new_arr.slice(new_arr.index(person), 1)
-           p new_arr.ids
-          end
-        end
+        dont_want << like.swiped_id
+      #if I LIKED someone, they are added to the array to be removed
+      elsif like.swiper_id == id && like.status == 1
+        dont_want << like.swiped_id
+      #if someone DISLIKED me, then they will not show up for me
+      elsif like.swiped_id == id && like.status == 0
+        dont_want << like.swiper_id
       end
     end
-    return new_arr
+
+    return self.remove_people(people, dont_want)
+  end
+
+  def remove_people(people, dont_want)
+    new_arr = []
+
+    people.each do |person|
+      if dont_want.include?(person.id)
+        new_arr << person
+      end
+      return new_arr
+    end
+
   end
 
   #Returns the desired gender based upon your gender and preference
