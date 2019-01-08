@@ -7,13 +7,21 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :email, format: { with: /@/, message: "Must be a valid email address"}
 
-  # has_many :likes, foreign_key: "swiped_id"
-  # has_many :likes do
-  #   where(swiped_id: id, swiper_id: id)
-  # end
-
-  def likes
-    Likes.all
+  #this method is meant to clear out amyone you have liked, disliked, or has disliked you
+  def clear_likes(people, likes)
+    new_arr = people
+    likes.each do |like|
+      #if I DIDN'T like someone, they are removed
+      if like.swiper_id == id && like.status == 0
+        new_arr.each do |person|
+          if person.id == like.swiped_id
+           p new_arr.slice(new_arr.index(person), 1)
+           p new_arr.ids
+          end
+        end
+      end
+    end
+    return new_arr
   end
 
   #Returns the desired gender based upon your gender and preference

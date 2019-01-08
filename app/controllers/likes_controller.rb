@@ -1,6 +1,6 @@
 class LikesController < ApplicationController
   def index
-    @likes = Like.all 
+    @likes = Like.all.where("swiped_id = ? OR swiper_id = ?", current_user.id, current_user.id ) 
     render 'index.json.jbuilder'
   end
 
@@ -14,7 +14,6 @@ class LikesController < ApplicationController
                       swiped_id: params[:swiped_id],
                       status: params[:status]
                     )
-    binding.pry
     if @like.save
       render 'show.json.jbuilder'
     else

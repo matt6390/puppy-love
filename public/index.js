@@ -9,11 +9,15 @@ var HomePage = {
     };
   },
   created: function() {
-    axios.get("/users").then(function(response) {
-      this.users = response.data;
-    }.bind(this)).catch(function(errors) {
-      console.log(errors.response.data.errors);
-    });
+    axios.get('/likes').then(function(response) {
+      var params = response.data;
+      axios.get("/users", params).then(function(users) {
+        this.users = users.data;
+      }.bind(this)).catch(function(errors) {
+        console.log(errors.response.data.errors);
+      });
+    }.bind(this));
+
   },
   methods: {
     swipeLeft: function(profile) {
@@ -24,11 +28,18 @@ var HomePage = {
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.errors);
       });
-
     },
+
     swipeRight: function(profile) {
       var params = {swiped_id: profile.id, status: 1};
       console.log(profile);
+    },
+    myLikes: function() {
+      axios.get('/likes').then(function(response) {
+        console.log(response.data);
+      }.bind(this)).catch(function(errors) {
+        console.log(errors.response.data.errors);
+      });
     }
   },
   computed: {}

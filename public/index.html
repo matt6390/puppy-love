@@ -25,6 +25,7 @@
   <div class="vue-component">
 
     <h1>{{ message }}</h1>
+    <button v-on:click="myLikes()">My Likes</button>
     <div v-for="user in users">
       <p>{{ user }}</p>
       <button class="button" v-on:click="swipeLeft(user)">Swipe Left</button>
