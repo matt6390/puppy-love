@@ -3,6 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>My App</title>
+  <!-- Firebase Scripts -->
+  
+  <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyA0cPdaYGs4S7pFYm5UCG39cKNOSweGYdE",
+      authDomain: "puppy-love-18595.firebaseapp.com",
+      databaseURL: "https://puppy-love-18595.firebaseio.com",
+      projectId: "puppy-love-18595",
+      storageBucket: "puppy-love-18595.appspot.com",
+      messagingSenderId: "842745847638"
+    };
+    firebase.initializeApp(config);
+  </script>
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.js"></script>

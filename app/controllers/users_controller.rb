@@ -11,7 +11,7 @@ class UsersController < ApplicationController
       @users = @all_users
     end
     
-    #Clear out all the people that we don't want to see, also shuffles
+    # Clear out all the people that we don't want to see, also shuffles
     @users = current_user.clear_likes(@users, @likes).shuffle
 
     render 'index.json.jbuilder'

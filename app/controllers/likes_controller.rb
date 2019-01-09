@@ -12,6 +12,7 @@ class LikesController < ApplicationController
     #if another user has already liked you
     if Like.find_by(swiper_id: params[:swiped_id], swiped_id: current_user.id, status: 1)
       @like = Like.find_by(swiper_id: params[:swiped_id], swiped_id: current_user.id, status: 1)
+      #If I did not like the person who liked me, update the Like so that we never see each other
       if params[:status] == 0
         @like.status = params[:status]
         if @like.save
@@ -19,13 +20,10 @@ class LikesController < ApplicationController
         else
           render json: {errors: @like.errors.full_messages}, status: :bad_request
         end
+        #If I did Like the person, then we will be matched
       elsif params[:status] == 1
-        @like.status = params[:status]
-        if @like.save
-          render json: {Message: "You've Matched!"}
-        else
-          render json: {errors: @like.errors.full_messages}, status: :bad_request
-        end
+        # render json: {message: "You've Been Matched"}
+        render json: @like.as_json
       end
 
     else #when the other user has not Liked you yet

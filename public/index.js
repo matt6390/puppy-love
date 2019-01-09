@@ -25,7 +25,7 @@ var HomePage = {
       axios.post("/likes", params).then(function(response) {
         console.log(response.data);
         this.users.shift();
-        
+
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.errors);
       });
@@ -34,12 +34,23 @@ var HomePage = {
     swipeRight: function(profile) {
       var params = {swiped_id: profile.id, status: 1};
       axios.post("/likes", params).then(function(response) {
-        console.log(response.data);
+        params = {swiped_id: response.data.swiped_id, swiper_id: response.data.swiper_id};
         this.users.shift();
-        
-      }.bind(this)).catch(function(errors) {
-        console.log(errors.response.data.errors);
-      });
+        if (response.data.swiper_id === profile.id) {
+          // This is where the firebase creation of a conversation will start?
+          var ref = firebase.database().ref('conversations');
+          console.log(params);
+          ref.push({
+            user_1: params.swiped_id,
+            user_2: params.swiper_id
+          }, function(error) {
+            console.log(error);
+          });
+          
+        }
+
+
+      }.bind(this));
     },
     myLikes: function() {
       axios.get('/likes').then(function(response) {
