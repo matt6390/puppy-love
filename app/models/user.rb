@@ -22,20 +22,21 @@ class User < ApplicationRecord
         dont_want << like.swiper_id
       end
     end
-
     return self.remove_people(people, dont_want)
+    # return people
   end
 
+  #removes any profiles that we do not want to see
   def remove_people(people, dont_want)
     new_arr = []
-
+    #if a persons id is not in the dont_want, then they are returned by this method
     people.each do |person|
       if dont_want.include?(person.id)
+      else
         new_arr << person
       end
-      return new_arr
     end
-
+    return new_arr
   end
 
   #Returns the desired gender based upon your gender and preference

@@ -22,9 +22,10 @@ var HomePage = {
   methods: {
     swipeLeft: function(profile) {
       var params = {swiped_id: profile.id, status: 0};
-      axios.post("/likes", params).then(function(respose) {
-        console.log(respose.data);
-
+      axios.post("/likes", params).then(function(response) {
+        console.log(response.data);
+        this.users.shift();
+        
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.errors);
       });
@@ -32,7 +33,13 @@ var HomePage = {
 
     swipeRight: function(profile) {
       var params = {swiped_id: profile.id, status: 1};
-      console.log(profile);
+      axios.post("/likes", params).then(function(response) {
+        console.log(response.data);
+        this.users.shift();
+        
+      }.bind(this)).catch(function(errors) {
+        console.log(errors.response.data.errors);
+      });
     },
     myLikes: function() {
       axios.get('/likes').then(function(response) {

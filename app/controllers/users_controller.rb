@@ -3,9 +3,7 @@ class UsersController < ApplicationController
     #gets all users at the s
     @all_users = User.all.where("id != ?", current_user.id)
     @likes = Like.all.where("swiped_id = ? OR swiper_id = ?", current_user.id, current_user.id )
-    # binding.pry
-    @all_users = current_user.clear_likes(@all_users, @likes)
-    binding.pry
+
     #will show all-people if you are bi, but will show your preference if you have one
     if current_user.preference != 2
       @users = @all_users.where("gender = ?", current_user.prefers)
@@ -13,7 +11,8 @@ class UsersController < ApplicationController
       @users = @all_users
     end
     
-    @users = @users.shuffle
+    #Clear out all the people that we don't want to see, also shuffles
+    @users = current_user.clear_likes(@users, @likes).shuffle
 
     render 'index.json.jbuilder'
   end
