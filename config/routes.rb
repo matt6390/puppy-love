@@ -12,4 +12,16 @@ Rails.application.routes.draw do
   post "/likes" => 'likes#create'
   patch "/likes/:id" => 'likes#update'
   delete "/likes/:id" => 'likes#destroy'
+
+  get "/conversations" => 'conversations#index'
+  get "/conversations/:id" => 'conversations#show'
+  post "/conversations" => 'conversations#create'
+  patch "/conversations/:id" => 'conversations#update'
+  delete "/conversations/:id" => 'conversations#destroy'
+
+  get "/conversing_users" => 'conversing_users#index'
+  get "/conversing_users/:id" => 'conversing_users#show'
+  post "/conversing_users" => 'conversing_users#create'
+  patch "/conversing_users/:id" => 'conversing_users#update'
+  delete "/conversing_users/:id" => 'conversing_users#destroy'
 end
