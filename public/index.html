@@ -5,6 +5,8 @@
   <title>My App</title>
   <!-- Firebase Scripts -->
   
+  <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
   <script>
     // Initialize Firebase
@@ -26,9 +28,11 @@
 </head>
 <body>
   <div id="vue-app">
+    <a href="/#/">Home</a>
     <a href="/#/login">Login</a>
     <a href="/#/signup">Signup</a>
     <a href="/#/logout">Logout</a>
+    <a href="/#/conversations">Conversations</a>
 
     <router-view></router-view>
 
@@ -38,7 +42,6 @@
 
 <template id="home-page">
   <div class="vue-component">
-
     <h1>{{ message }}</h1>
     <button v-on:click="myLikes()">My Likes</button>
     <div v-for="user in users">
@@ -47,6 +50,19 @@
       <button class="button" v-on:click="swipeRight(user)">Swipe Right</button>
     </div>
 
+  </div>
+</template>
+
+<template id="conversations-page">
+  <div class="vue-component">
+    <div class="col-md-4">
+      <ul>
+        <li v-for="conversation in conversations"> {{ conversation }} <button v-on:click="loadConversation(conversation.id)">Load Conversation</button></li>
+      </ul>
+    </div>
+    <div class="col-md-8">
+      <p v-for="message in messages">{{ message }}</p>
+    </div>
   </div>
 </template>
 

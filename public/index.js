@@ -49,8 +49,7 @@ var HomePage = {
             axios.post("/conversations_users", you).then(function(response) {
               // conversation_user for them
               axios.post("/conversations_users", them).then(function(response) {
-                
-
+                router.push("/conversations");
               }).catch(function(errors) {
                 console.log(errors.response.data.errors);
               });
@@ -58,19 +57,7 @@ var HomePage = {
               console.log(errors.response.data.errors);
             });
           });
-
-
-          // LOOK AT CLOUD FIRESTORE. ALLOWS FOR BETTER QUERYING
-
-
-
-
-
-
-
         }
-
-
       }.bind(this));
     },
     myLikes: function() {
@@ -79,6 +66,44 @@ var HomePage = {
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.errors);
       });
+    }
+  },
+  computed: {}
+};
+
+var ConversationsPage = {
+  template: "#conversations-page",
+  data: function() {
+    return {
+      conversations: [],
+      messages: {}
+    };
+  },
+  created: function() {
+    axios.get("/conversations").then(function(response) {
+      this.conversations = response.data;
+    }.bind(this)).catch(function(errors) {
+      console.log(errors.response.data.errors);
+    });
+  },
+  methods: {
+    loadConversation: function(id) {
+      var conversation = [];
+      var db = firebase.firestore();
+      db.settings({
+        timestampsInSnapshots: true
+      });
+      db = db.collection('messages');
+
+      db.where("conversation_id", "==", id).onSnapshot(function(messages) {
+        messages.forEach(function(message) {
+          var text = {body: message.get("body"), user_id: message.get("user_id"), created_at: message.get("created_at")};
+          conversation.push(text);
+        }.bind(this));
+        this.messages = conversation;
+        console.log(this.messages);
+        // console.log(this.messages);
+      }.bind(this));
     }
   },
   computed: {}
@@ -164,6 +189,7 @@ var LogoutPage = {
 var router = new VueRouter({
   routes: [
     { path: "/", component: HomePage },
+    { path: "/conversations", component: ConversationsPage },
     { path: "/signup", component: SignupPage },
     { path: "/login", component: LoginPage },
     { path: "/logout", component: LogoutPage }
