@@ -42,15 +42,20 @@ var HomePage = {
 
         // This will run if the users Match
         if (response.data.swiper_id === profile.id) {
-          // params = {};
           axios.post("/conversations").then(function(response) {
             you.conversation_id = response.data.id;
             them.conversation_id = response.data.id;
-            axios.post("/conversing_users", you).then(function(response) {
-              console.log(response.data);
-            });
-            axios.post("/conversing_users", them).then(function(response) {
-              console.log(response.data);
+            // conversation_user for you
+            axios.post("/conversations_users", you).then(function(response) {
+              // conversation_user for them
+              axios.post("/conversations_users", them).then(function(response) {
+                
+
+              }).catch(function(errors) {
+                console.log(errors.response.data.errors);
+              });
+            }).catch(function(errors) {
+              console.log(errors.response.data.errors);
             });
           });
 

@@ -19,9 +19,9 @@ Rails.application.routes.draw do
   patch "/conversations/:id" => 'conversations#update'
   delete "/conversations/:id" => 'conversations#destroy'
 
-  get "/conversing_users" => 'conversing_users#index'
-  get "/conversing_users/:id" => 'conversing_users#show'
-  post "/conversing_users" => 'conversing_users#create'
-  patch "/conversing_users/:id" => 'conversing_users#update'
-  delete "/conversing_users/:id" => 'conversing_users#destroy'
+  get "/conversations_users" => 'conversations_users#index'
+  get "/conversations_users/:id" => 'conversations_users#show'
+  post "/conversations_users" => 'conversations_users#create'
+  patch "/conversations_users/:id" => 'conversations_users#update'
+  delete "/conversations_users/:id" => 'conversations_users#destroy'
 end
