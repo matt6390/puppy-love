@@ -76,7 +76,7 @@ var ConversationsPage = {
   data: function() {
     return {
       conversations: [],
-      messages: {}
+      messages: []
     };
   },
   created: function() {
@@ -87,6 +87,40 @@ var ConversationsPage = {
     });
   },
   methods: {
+    testFirebase: function(id) {
+      var conversation = [];
+      var db = firebase.firestore();
+      db.settings({
+        timestampsInSnapshots: true
+      });
+      var convId = id.toString();
+      var dbRef = db.collection('messages').where("conversation_id", "==", id);
+
+      // gets messages from firebase for the chosen conversation
+      dbRef.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(message) {
+          console.log(message.data().created_at);
+          this.messages.push(message.data());
+        }.bind(this));
+        // gets rid of the most recent message in the conversation, since the function below is going to recieve the most recent message, and then watch for any future messages
+        this.messages.pop();
+      }.bind(this));
+
+
+
+      dbRef.onSnapshot(function(snapshot) {
+        var newMessage = [];
+        snapshot.forEach(function(message) {
+          newMessage = message.data();
+          console.log(newMessage);
+        }.bind(this));
+        this.messages.push(newMessage);
+      }.bind(this));
+
+
+
+
+    },
     loadConversation: function(id) {
       var conversation = [];
       var db = firebase.firestore();
@@ -104,6 +138,14 @@ var ConversationsPage = {
         console.log(this.messages);
         // console.log(this.messages);
       }.bind(this));
+
+      db.where("conversation_id", "==", id).onSnapshot(function(snapshot) {
+        snapshot.docChanges().forEach(function(change) {
+          console.log(change.doc.data());
+        }.bind(this));
+      }.bind(this));
+
+
     }
   },
   computed: {}
@@ -150,6 +192,7 @@ var SignupPage = {
       email: "",
       age: "",
       gender: "",
+      preference: "",
       password: "",
       passwordConfirmation: "",
       errors: []
@@ -161,6 +204,7 @@ var SignupPage = {
         name: this.name,
         email: this.email,
         gender: this.gender,
+        preference: this.preference,
         password: this.password,
         password_confirmation: this.passwordConfirmation
       };

@@ -3,8 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <title>My App</title>
-  <!-- Firebase Scripts -->
+  <!-- Bootstrap Stuff -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <!-- Theme style -->
+  <link href="assets/css/theme-style.min.css" rel="stylesheet">
+  <!-- Your custom override -->
+  <link href="assets/css/custom-style.css" rel="stylesheet">
+  <!-- Optional: ICON SETS -->
+  <!-- Iconset: Font Awesome 5.0.4 via CDN -->
+  <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+  <!-- Iconset: flag icons - http://lipis.github.io/flag-icon-css/ -->
+  <link href="assets/plugins/flag-icon-css/css/flag-icon.min.css" rel="stylesheet">
+  <!-- Iconset: ionicons - http://ionicons.com/ -->
+  <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+  <!-- Iconset: Linearicons - https://linearicons.com/free -->
+  <link href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" rel="stylesheet">
+  <!-- Le fav and touch icons - @todo: fill with your icons or remove, try https://realfavicongenerator.net -->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
+  <link rel="manifest" href="assets/favicons/manifest.json">
+  <link rel="shortcut icon" href="assets/favicons/favicon.ico">
+  <meta name="msapplication-config" content="assets/favicons/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Rambla:400,700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Calligraffitti' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
   
+  <!--Plugin: Retina.js (high def image replacement) - @see: http://retinajs.com/-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+  <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
@@ -34,10 +65,151 @@
     <a href="/#/logout">Logout</a>
     <a href="/#/conversations">Conversations</a>
 
+    <div class="page-loader" data-toggle="page-loader"></div>
+
+    <!-- Header -->
+    <div id="header">
+      <div class="header-upper">
+        <div class="header-inner container">
+          <!--user menu-->
+          <div class="header-block-flex order-1 mr-auto">
+            <nav class="nav nav-sm header-block-flex">
+              <a class="nav-link d-md-none" href="login.html"><i class="fa fa-user"></i></a>
+              <a class="nav-link text-xs text-uppercase d-none d-md-block" href="#/signup">Sign Up</a><div class="header-divider header-divider-sm"></div><a class="nav-link text-xs text-uppercase d-none d-md-block" href="#/login">Login</a><div class="header-divider header-divider-sm"></div><a class="nav-link text-xs text-uppercase d-none d-md-block" href="#/logout">Logout</a>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div class="header">
+        <div class="header-inner container">
+          <!--branding/logo -->
+          <div class="header-brand">
+            <a class="header-brand-text" href="/#/" title="Home">
+              <h1 class="h2">
+                <span class="header-brand-text-alt">Puppy</span>Love<span class="header-brand-text-alt">🐶</span>
+              </h1>
+            </a>
+            <div class="header-divider d-none d-lg-block"></div>
+            <div class="header-slogan d-none d-lg-block">Connecting you to others through puppies</div>
+          </div>
+          <!-- other header content -->
+          <div class="header-block order-12">
+            
+            <!--Search trigger -->
+            <a href="#search" class="btn btn-icon btn-link header-btn float-right order-11" data-toggle="search-form" data-target=".header-search"><i class="fa fa-search fa-flip-horizontal search-icon"></i></a>
+            
+            <!-- mobile collapse menu button - data-toggle="collapse" = default BS menu - data-toggle="jpanel-menu" = jPanel Menu - data-toggle="overlay" = Overlay Menu -->
+            <a href="#top" class="btn btn-link btn-icon header-btn float-right d-lg-none" data-toggle="jpanel-menu" data-target=".navbar-main" data-direction="right"> <i class="fa fa-bars"></i> </a>
+          </div>
+          
+          <div class="navbar navbar-expand-md navbar-static-top">
+            <!--everything within this div is collapsed on mobile-->
+            <div class="navbar-main collapse">
+              <!--main navigation-->
+              <ul class="nav navbar-nav float-lg-right dropdown-effect-fade">
+                
+                <!-- Homepages -->
+                <li class="nav-item dropdown dropdown-mega-menu active">
+                  <div class="btn-group mt-4" role="group" aria-label="Basic example">
+                  <button type="button" class="btn btn-dark"><a href="/#/">Home</a></button>
+                  <button type="button" class="btn btn-dark"><a href="/#/conversations">Conversations</a></button>
+                </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <router-view></router-view>
 
+    <!-- Footer -->
+    <footer id="footer" class="p-0">
+      <div class="container pt-6 pb-5">
+        <div class="row">
+          <div class="col-md-4">
+            <!--@todo: replace with company contact details-->
+            <h4 class="text-uppercase text-white">
+              Contact Us
+            </h4>
+            <address>
+              <ul class="list-unstyled">
+                <li>
+                  <abbr title="Phone"><i class="fa fa-phone fa-fw"></i></abbr>
+                  019223 8092344
+                </li>
+                <li>
+                  <abbr title="Email"><i class="fa fa-envelope fa-fw"></i></abbr>
+                  matthew@gmail.com
+                </li>
+                <li>
+                  <abbr title="Address"><i class="fa fa-home fa-fw"></i></abbr>
+                  That One House, In That One City, ZIP-003
+                </li>
+              </ul>
+            </address>
+          </div>
+          
+          <div class="col-md-4">
+            <h4 class="text-uppercase text-white">
+              About Us
+            </h4>
+            <p>Growing my software development skills, and bringing people together are the 2 things I do best.</p>
+          </div>
+          
+          <div class="col-md-4">
+            <h4 class="text-uppercase text-white">
+              Newsletter
+            </h4>
+            <p>I do not actually have a newsletter, but feel free to put your email in here. Nothing happens :)</p>
+            <!--@todo: replace with mailchimp code-->
+            <form>
+              <div class="input-group">
+                <label class="sr-only" for="email-field">Email</label>
+                <input type="text" class="form-control" id="email-field" placeholder="Email">
+                <span class="input-group-append">
+                  <button class="btn btn-primary" type="button">Go!</button>
+                </span>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+      </div>
+      <hr class="my-0 hr-blank op-2" />
+      <!--@todo: replace with company copyright details-->
+      <div class="bg-inverse-dark text-sm py-3">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="mb-0">Site template by <a href="appstraptheme.com" class="footer-link">AppStrap</a> | Copyright 2018 &copy; AppStrap</p>
+            </div>
+            <div class="col-md-6">
+              <ul class="list-inline footer-links float-md-right mb-0">
+                <li class="list-inline-item"><a href="#">Terms</a></li>
+                <li class="list-inline-item"><a href="#">Privacy</a></li>
+                <li class="list-inline-item"><a href="#">Contact Us</a></li>
+              </ul>
+            </div>
+          </div>
+          <a href="#top" class="btn btn-icon btn-dark pos-fixed pos-b pos-r mr-3 mb-3 scroll-state-hidden" title="Back to top" data-scroll="scroll-state"><i class="fa fa-chevron-up"></i></a>
+        </div>
+      </div>
+    </footer>
   </div>
 </body>
+  <!--jQuery 3.2.1 via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!-- Popper 1.12.9 via CDN, needed for Bootstrap Tooltips & Popovers -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  
+  <!-- Bootstrap v4.0.0 JS via CDN -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <!--Custom scripts & AppStrap API integration -->
+  <script src="assets/js/custom-script.js"></script>
+  <!--AppStrap scripts mainly used to trigger libraries/plugins -->
+  <script src="assets/js/script.min.js"></script>
 </html>
 
 <template id="home-page">
@@ -55,13 +227,15 @@
 
 <template id="conversations-page">
   <div class="vue-component">
-    <div class="col-md-4">
-      <ul>
-        <li v-for="conversation in conversations"> {{ conversation }} <button v-on:click="loadConversation(conversation.id)">Load Conversation</button></li>
-      </ul>
-    </div>
-    <div class="col-md-8">
-      <p v-for="message in messages">{{ message }}</p>
+    <div class="row">
+      <div class="col-md-4">
+        <ul>
+          <li v-for="conversation in conversations"> {{ conversation }} <button v-on:click="testFirebase(conversation.id)">Load Conversation</button></li>
+        </ul>
+      </div>
+      <div class="col-md-8">
+        <p v-for="message in messages">{{ message }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -111,9 +285,19 @@
       <div class="form-group">
         <label>Gender:</label>
         <select v-model="gender">
+          <option disabled>Please Choose One...</option>
           <option>Male</option>
           <option>Female</option>
           <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>I Prefer:</label>
+        <select v-model="preference" text="black">
+          <option disabled>Please Choose One...</option>
+          <option value="0">People of opposite gender</option>
+          <option value="1">People of the same gender</option>
+          <option value="2">Both</option>
         </select>
       </div>
       <div class="form-group">
