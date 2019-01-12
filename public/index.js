@@ -75,6 +75,9 @@ var ConversationsPage = {
   template: "#conversations-page",
   data: function() {
     return {
+      myId: "",
+      convoId: "",
+      outgoingMessage: "",
       conversations: [],
       messages: []
     };
@@ -82,12 +85,41 @@ var ConversationsPage = {
   created: function() {
     axios.get("/conversations").then(function(response) {
       this.conversations = response.data;
+      this.myId = response.data[0].you;
     }.bind(this)).catch(function(errors) {
       console.log(errors.response.data.errors);
     });
   },
   methods: {
-    testFirebase: function(id) {
+    scrollBottom: function() {
+      var messageBox = document.getElementById("msgBox");
+      messageBox.scrollTop = messageBox.clientHeight;
+      console.log(messageBox.scrollTop);
+    },
+    orderMessages: function() {
+      this.messages = this.messages.sort();
+    },
+    sendMessage: function() {
+      var db = firebase.firestore();
+      db.settings({
+        timestampsInSnapshots: true
+      });
+      db = db.collection('messages');
+
+      db.add({
+        body: this.outgoingMessage,
+        conversation_id: this.convoId,
+        user_id: this.myId,
+        sent_at: new Date()
+      }).then(function(message) {
+        console.log(message.id);
+      });
+      this.orderMessages();
+    },
+
+    loadConversations: function(id) {
+      this.convoId = id;
+      this.messages = [];
       var conversation = [];
       var db = firebase.firestore();
       db.settings({
@@ -97,58 +129,40 @@ var ConversationsPage = {
       var dbRef = db.collection('messages').where("conversation_id", "==", id);
 
       // gets messages from firebase for the chosen conversation
-      dbRef.get().then(function(querySnapshot) {
+      dbRef.orderBy("sent_at").get().then(function(querySnapshot) {
         querySnapshot.forEach(function(message) {
-          console.log(message.data().created_at);
           this.messages.push(message.data());
         }.bind(this));
         // gets rid of the most recent message in the conversation, since the function below is going to recieve the most recent message, and then watch for any future messages
         this.messages.pop();
       }.bind(this));
-
-
-
-      dbRef.onSnapshot(function(snapshot) {
+      // This is what watches for new messages to be added/sent
+      var x = this.messages;
+      dbRef.orderBy("sent_at").onSnapshot(function(snapshot) {
         var newMessage = [];
         snapshot.forEach(function(message) {
           newMessage = message.data();
-          console.log(newMessage);
+          console.log(message.data());
         }.bind(this));
-        this.messages.push(newMessage);
+        x.push(newMessage);
+        // this.messages = [];
+        this.messages = x;
+        this.scrollBottom();
       }.bind(this));
-
-
-
-
     },
-    loadConversation: function(id) {
-      var conversation = [];
-      var db = firebase.firestore();
-      db.settings({
-        timestampsInSnapshots: true
-      });
-      db = db.collection('messages');
 
-      db.where("conversation_id", "==", id).onSnapshot(function(messages) {
-        messages.forEach(function(message) {
-          var text = {body: message.get("body"), user_id: message.get("user_id"), created_at: message.get("created_at")};
-          conversation.push(text);
-        }.bind(this));
-        this.messages = conversation;
-        console.log(this.messages);
-        // console.log(this.messages);
-      }.bind(this));
-
-      db.where("conversation_id", "==", id).onSnapshot(function(snapshot) {
-        snapshot.docChanges().forEach(function(change) {
-          console.log(change.doc.data());
-        }.bind(this));
-      }.bind(this));
-
-
+    theirId: function(id) {
+      if (id === this.myId) {
+        "a";
+      } else if (id === 0) {
+        return 'a';
+      } else {
+        return id;
+      }
     }
   },
-  computed: {}
+  computed: {
+  }
 };
 
 var LoginPage = {

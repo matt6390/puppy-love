@@ -2,12 +2,12 @@ class ConversationsController < ApplicationController
   def index
     @conversations = current_user.conversations
 
-    render json: @conversations.as_json
+    render "index.json.jbuilder"
   end
 
   def create
     @conversation = Conversation.new()
-    
+
     if @conversation.save
       render json: @conversation.as_json
     else

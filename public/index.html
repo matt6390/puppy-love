@@ -9,6 +9,7 @@
   <link href="assets/css/theme-style.min.css" rel="stylesheet">
   <!-- Your custom override -->
   <link href="assets/css/custom-style.css" rel="stylesheet">
+  <link href="assets/css/index.css" rel="stylesheet">
   <!-- Optional: ICON SETS -->
   <!-- Iconset: Font Awesome 5.0.4 via CDN -->
   <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
@@ -55,7 +56,6 @@
   <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.js"></script>
   <script src="index.js" defer></script>
-  <script src="index.css" defer></script>
 </head>
 <body>
   <div id="vue-app">
@@ -227,14 +227,29 @@
 
 <template id="conversations-page">
   <div class="vue-component">
-    <div class="row">
-      <div class="col-md-4">
-        <ul>
-          <li v-for="conversation in conversations"> {{ conversation }} <button v-on:click="testFirebase(conversation.id)">Load Conversation</button></li>
-        </ul>
-      </div>
-      <div class="col-md-8">
-        <p v-for="message in messages">{{ message }}</p>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="list-group">
+            <a v-for="conversation in conversations" class="list-group-item list-group-item-action list-group-item-success" v-on:click="loadConversations(conversation.id)"> {{ conversation }}</a>
+          </div>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-6 card">
+          <div id="msgBox" class="card-header message-container">
+            <div v-for="message in messages">
+              <button v-if="message.user_id == 0" class="first-message">{{ message }}</button>
+              <button v-if="message.user_id === myId" class="my-message">{{ message }}</button>
+              <button v-if="message.user_id === theirId(message.user_id)" class="their-message">{{ message }}</button>
+            </div>
+          </div> 
+          <div class="row">
+            <textarea class="form-control message-box" v-model="outgoingMessage">
+              
+            </textarea>
+            <a v-on:click="sendMessage()" class="btn btn-xlg btn-primary btn-icon send-message"><i class="ion-android-exit icon-1x"></i></a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
