@@ -190,7 +190,7 @@ var UserEditPage = {
   template: "#user-edit-page",
   data: function() {
     return {
-      user: {id:{}, f_name:{}, l_name:{}, email:{}, age:{}, gender:{}, preference:{}},
+      user: {id:{}, pictures:[], f_name:{}, l_name:{}, email:{}, age:{}, gender:{}, preference:{}},
       firstName: "",
       lastName: "",
       email: "",
