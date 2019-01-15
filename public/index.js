@@ -20,16 +20,21 @@ var HomePage = {
 
   },
   methods: {
-    removeProfile: function(profile) {
+    removeProfile: function(profile, direction) {
       console.log(this.users);
-
+      var swipe = '';
+      if (direction === "left") {
+        swipe = "bounceOutLeft";
+      } else if (direction === "right") {
+        swipe = "bounceOutRight";
+      }
 
       var card = document.getElementById(profile.id);
 
-      card.classList.add('bounceOutRight');
+      card.classList.add(swipe);
       setTimeout(function() {
         console.log('done');
-        card.classList.remove("bounceOutRight");
+        card.classList.remove(swipe);
         this.users.shift();
         console.log(this.users);
       }.bind(this), 500);
@@ -40,7 +45,7 @@ var HomePage = {
       var params = {swiped_id: profile.id, status: 0};
       axios.post("/likes", params).then(function(response) {
         console.log(response.data);
-        this.removeProfile(profile);
+        this.removeProfile(profile, "left");
 
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.errors);
@@ -50,7 +55,7 @@ var HomePage = {
     swipeRight: function(profile) {
       var params = {swiped_id: profile.id, status: 1};
       axios.post("/likes", params).then(function(response) {
-        this.removeProfile(profile);
+        this.removeProfile(profile, "right");
 
         var you = {user_id: response.data.swiped_id};
         var them = {user_id: response.data.swiper_id};
@@ -181,6 +186,38 @@ var ConversationsPage = {
   }
 };
 
+var UserEditPage = {
+  template: "#user-edit-page",
+  data: function() {
+    return {
+      message: "Welcome to Vue.js!",
+      user: {id:{}, f_name:{}, l_name:{}, email:{}, age:{}, gender:{}, preference:{}},
+      firstName: "",
+      lastName: "",
+      email: "",
+      age: "",
+      gender: "",
+      preference: "",
+      password: "",
+      passwordConfirmation: "",
+      errors: []
+    };
+  },
+  created: function() {
+    axios.get("/users/current_user").then(function(response) {
+      this.user = response.data;
+    }.bind(this)).catch(function(errors) {
+      console.log(errors.response.data.error);
+    });
+  },
+  methods: {
+    submit: function() {
+
+    }
+  },
+  computed: {}
+};
+
 var LoginPage = {
   template: "#login-page",
   data: function() {
@@ -267,6 +304,7 @@ var router = new VueRouter({
   routes: [
     { path: "/", component: HomePage },
     { path: "/conversations", component: ConversationsPage },
+    { path: "/user-edit", component: UserEditPage },
     { path: "/signup", component: SignupPage },
     { path: "/login", component: LoginPage },
     { path: "/logout", component: LogoutPage }
