@@ -5,7 +5,7 @@ var HomePage = {
   data: function() {
     return {
       message: "Welcome to Vue.js!",
-      users: []
+      users: [{user:[]}]
     };
   },
   created: function() {
@@ -20,11 +20,27 @@ var HomePage = {
 
   },
   methods: {
+    removeProfile: function(profile) {
+      console.log(this.users);
+
+
+      var card = document.getElementById(profile.id);
+
+      card.classList.add('bounceOutRight');
+      setTimeout(function() {
+        console.log('done');
+        card.classList.remove("bounceOutRight");
+        this.users.shift();
+        console.log(this.users);
+      }.bind(this), 500);
+      
+    },
+
     swipeLeft: function(profile) {
       var params = {swiped_id: profile.id, status: 0};
       axios.post("/likes", params).then(function(response) {
         console.log(response.data);
-        this.users.shift();
+        this.removeProfile(profile);
 
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.errors);
@@ -34,8 +50,7 @@ var HomePage = {
     swipeRight: function(profile) {
       var params = {swiped_id: profile.id, status: 1};
       axios.post("/likes", params).then(function(response) {
-        this.users.shift();
-
+        this.removeProfile(profile);
 
         var you = {user_id: response.data.swiped_id};
         var them = {user_id: response.data.swiper_id};
@@ -49,7 +64,7 @@ var HomePage = {
             axios.post("/conversations_users", you).then(function(response) {
               // conversation_user for them
               axios.post("/conversations_users", them).then(function(response) {
-                router.push("/conversations");
+                // router.push("/conversations");
               }).catch(function(errors) {
                 console.log(errors.response.data.errors);
               });
@@ -203,7 +218,8 @@ var SignupPage = {
   template: "#signup-page",
   data: function() {
     return {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       age: "",
       gender: "",
@@ -216,8 +232,10 @@ var SignupPage = {
   methods: {
     submit: function() {
       var params = {
-        name: this.name,
+        f_name: this.firstName,
+        l_name: this.lastName,
         email: this.email,
+        age: this.age,
         gender: this.gender,
         preference: this.preference,
         password: this.password,

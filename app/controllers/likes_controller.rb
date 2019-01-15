@@ -23,7 +23,7 @@ class LikesController < ApplicationController
         #If I did Like the person, then we will be matched
       elsif params[:status] == 1
         # Changes the Likes status to 0, making them 'dislike' the other person, but this prevents the 2 users from showing up for each other
-        @like.status = params[:status]
+        # @like.status = params[:status]                        *----CHANGE ME PLEASE----*
         # render json: {message: "You've Been Matched"}
         render json: @like.as_json
       end
