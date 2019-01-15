@@ -7,6 +7,12 @@ Rails.application.routes.draw do
   patch "/users/:id" => 'users#update'
   delete "/users/:id" => 'users#destroy'
 
+  get "/pictures" => 'pictures#index'
+  get "/pictures/:id" => 'pictures#show'
+  post "/pictures" => 'pictures#create'
+  patch "/pictures/:id" => 'pictures#update'
+  delete "/pictures/:id" => 'pictures#destroy'
+
   get "/likes" => 'likes#index'
   get "/likes/:id" => 'likes#show'
   post "/likes" => 'likes#create'

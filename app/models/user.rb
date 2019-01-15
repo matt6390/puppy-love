@@ -8,6 +8,7 @@ class User < ApplicationRecord
   validates :email, format: { with: /@/, message: "Must be a valid email address"}
 
   has_and_belongs_to_many :conversations
+  has_many :pictures
 
   #this method is meant to clear out amyone you have liked, disliked, or has disliked you
   def clear_likes(people, likes)

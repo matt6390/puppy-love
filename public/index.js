@@ -234,9 +234,18 @@ var UserEditPage = {
       }, function() {
         // completed upload
         upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-          console.log('File available at', downloadURL);
-        });
-      });
+          // now we will create a picture reference in the Backend so that we do not have to make a reference to firebase every single time, and can rather just make fast queries
+          var params = {
+            user_id: this.user.id,
+            url: downloadURL
+          };
+
+          axios.post("/pictures", params).then(function(response) {
+            console.log(response.data);
+          });
+
+        }.bind(this));
+      }.bind(this));
 
     },
 
