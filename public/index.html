@@ -65,7 +65,7 @@
     <a href="/#/logout">Logout</a>
     <a href="/#/conversations">Conversations</a>
 
-    <div class="page-loader" data-toggle="page-loader"></div>
+    <!-- <div class="page-loader" data-toggle="page-loader"></div> -->
 
     <!-- Header -->
     <div id="header">
@@ -236,17 +236,18 @@
         </div>
         <div class="col-md-2"></div>
         <div class="col-md-6 card">
-          <div id="msgBox" class="card-header message-container">
-            <div v-for="message in messages">
-              <button v-if="message.user_id == 0" class="first-message">{{ message }}</button>
-              <button v-if="message.user_id === myId" class="my-message">{{ message }}</button>
-              <button v-if="message.user_id === theirId(message.user_id)" class="their-message">{{ message }}</button>
+          <div id="msgBox" class="card-header message-container scroll-bottom" >
+            <div>
+              <div v-for="message in messages">
+                <a v-if="message.user_id == 0" class="first-message"><span>{{ message.body }}</span><h6 class="message-text">{{ message.sent_at }}</h6></a>
+                <a v-if="message.user_id === myId" class="my"><span>{{ message.body }}</span><h6 class="message-text">{{ message.sent_at }}</h6></a>
+                <a v-if="message.user_id === theirId(message.user_id)" class="your"><span>{{ message.body }}</span><h6 class="message-text">{{ message.sent_at }}</h6></a>
+              </div>
             </div>
           </div> 
           <div class="row">
-            <textarea class="form-control message-box" v-model="outgoingMessage">
-              
-            </textarea>
+            <input type="text" placeholder="Put Text Here..." v-on:keyup.enter="sendMessage()" class="form-control message-box" v-model="outgoingMessage">
+
             <a v-on:click="sendMessage()" class="btn btn-xlg btn-primary btn-icon send-message"><i class="ion-android-exit icon-1x"></i></a>
           </div>
         </div>

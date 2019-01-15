@@ -1,5 +1,8 @@
 {
   "name": "puppy-love",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "vue-chat-scroll": "^1.3.5",
+    "vue-sticky-scroll": "^0.1.0"
+  }
 }

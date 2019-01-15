@@ -92,9 +92,8 @@ var ConversationsPage = {
   },
   methods: {
     scrollBottom: function() {
-      var messageBox = document.getElementById("msgBox");
-      messageBox.scrollTop = messageBox.clientHeight;
-      console.log(messageBox.scrollTop);
+
+
     },
     orderMessages: function() {
       this.messages = this.messages.sort();
@@ -106,14 +105,16 @@ var ConversationsPage = {
       });
       db = db.collection('messages');
 
+      var time = new Date().toLocaleString();
+
       db.add({
         body: this.outgoingMessage,
         conversation_id: this.convoId,
         user_id: this.myId,
-        sent_at: new Date()
+        sent_at: time
       }).then(function(message) {
-        console.log(message.id);
       });
+      this.outgoingMessage = "",
       this.orderMessages();
     },
 
@@ -142,7 +143,6 @@ var ConversationsPage = {
         var newMessage = [];
         snapshot.forEach(function(message) {
           newMessage = message.data();
-          console.log(message.data());
         }.bind(this));
         x.push(newMessage);
         // this.messages = [];
@@ -152,6 +152,7 @@ var ConversationsPage = {
     },
 
     theirId: function(id) {
+      // this is used for the messages to determine whether to give it your-class or their-class
       if (id === this.myId) {
         "a";
       } else if (id === 0) {
@@ -256,6 +257,7 @@ var router = new VueRouter({
     return { x: 0, y: 0 };
   }
 });
+
 
 var app = new Vue({
   el: "#vue-app",
