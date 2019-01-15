@@ -190,7 +190,6 @@ var UserEditPage = {
   template: "#user-edit-page",
   data: function() {
     return {
-      message: "Welcome to Vue.js!",
       user: {id:{}, f_name:{}, l_name:{}, email:{}, age:{}, gender:{}, preference:{}},
       firstName: "",
       lastName: "",
@@ -200,19 +199,70 @@ var UserEditPage = {
       preference: "",
       password: "",
       passwordConfirmation: "",
-      errors: []
+      errors: [],
+      updates: []
     };
   },
   created: function() {
     axios.get("/users/current_user").then(function(response) {
       this.user = response.data;
-    }.bind(this)).catch(function(errors) {
-      console.log(errors.response.data.error);
+      this.firstName = response.data.f_name;
+      this.lastName = response.data.l_name;
+      this.email = response.data.email;
+      this.age = response.data.age;
+      this.gender = response.data.gender;
+      this.preference = response.data.preference;
+    }.bind(this)).catch(function(error) {
+      console.log(error.response.data.errors);
     });
   },
   methods: {
-    submit: function() {
+    addPicture: function() {
+      var picture = document.getElementById("newPic").files[0];
+      // set the preview img to selected image
+      document.getElementById('previewPic').src = URL.createObjectURL(picture);
 
+      var ref = firebase.storage().ref();
+      var upload = ref.child(this.user.id + "/" + picture.name).put(picture);
+
+      // Monitors the Upload Progress
+      upload.on("state_changed", function(snapshot) {
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+      }, function(error) {
+        // Upload unsuccessful
+      }, function() {
+        // completed upload
+        upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          console.log('File available at', downloadURL);
+        });
+      });
+
+    },
+
+    submit: function() {
+      var params = {
+        f_name: this.firstName,
+        l_name: this.lastName,
+        email: this.email,
+        age: this.age,
+        gender: this.gender,
+        preference: this.preference,
+        password: this.password,
+        password_confirmation: this.password_confirmation
+      };
+      axios.patch("/users/" + this.user.id, params).then(function(response) {
+        this.user = response.data;
+        this.firstName = response.data.f_name;
+        this.lastName = response.data.l_name;
+        this.email = response.data.email;
+        this.age = response.data.age;
+        this.gender = response.data.gender;
+        this.preference = response.data.preference;
+        this.updates.push("updated");
+      }.bind(this)).catch(function(error) {
+        console.log(error.response.data.errors);
+      });
     }
   },
   computed: {}

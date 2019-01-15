@@ -238,20 +238,22 @@
           </div>
         </div>
         <div class="col-md-2"></div>
-        <div class="col-md-6 card">
-          <div id="msgBox" class="card-header message-container scroll-bottom" >
-            <div>
-              <div v-for="message in messages">
-                <a v-if="message.user_id == 0" class="first-message"><span class="message-body">{{ message.body }}</span><h6 class="message-date-text">{{ message.sent_at }}</h6></a>
-                <a v-if="message.user_id === myId" class="my"><span class="message-body">{{ message.body }}</span><h6 class="message-date-text">{{ message.sent_at }}</h6></a>
-                <a v-if="message.user_id === theirId(message.user_id)" class="your"><span class="message-body">{{ message.body }}</span><h6 class="message-date-text">{{ message.sent_at }}</h6></a>
+        <div class="col-md-6">
+          <div class="card">
+            <div id="msgBox" class="card-header message-container scroll-bottom" >
+              <div>
+                <div v-for="message in messages">
+                  <a v-if="message.user_id == 0" class="first-message"><span class="message-body">{{ message.body }}</span><h6 class="message-date-text">{{ message.sent_at }}</h6></a>
+                  <a v-if="message.user_id === myId" class="my"><span class="message-body">{{ message.body }}</span><h6 class="message-date-text">{{ message.sent_at }}</h6></a>
+                  <a v-if="message.user_id === theirId(message.user_id)" class="your"><span class="message-body">{{ message.body }}</span><h6 class="message-date-text">{{ message.sent_at }}</h6></a>
+                </div>
               </div>
-            </div>
-          </div> 
-          <div class="row">
-            <input type="text" placeholder="Put Text Here..." v-on:keyup.enter="sendMessage()" class="form-control message-box" v-model="outgoingMessage">
+            </div> 
+            <div class="row">
+              <input type="text" placeholder="Put Text Here..." v-on:keyup.enter="sendMessage()" class="form-control message-box" v-model="outgoingMessage">
 
-            <a v-on:click="sendMessage()" class="btn btn-xlg btn-primary btn-icon send-message"><i class="ion-android-exit icon-1x"></i></a>
+              <a v-on:click="sendMessage()" class="btn btn-xlg btn-primary btn-icon send-message"><i class="ion-android-exit icon-1x"></i></a>
+            </div>
           </div>
         </div>
       </div>
@@ -262,55 +264,73 @@
 <template id="user-edit-page">
   <div class="vue-component">
     <div class="container">
-      <h1>Update Profile</h1>
-
-      <div v-if="user" class="col-md-4 outline">
-        <ul>
-          <li class="text-danger" v-for="error in errors">{{ error }}</li>
-        </ul>
-        <div class="form-group">
-          <label>First Name:</label> 
-          <input v-bind:placeholder="user.f_name" type="text" class="form-control" v-model="firstName">
-          <label>Last Name:</label>
-          <input v-bind:placeholder="user.l_name" type="text" class="form-control" v-model="lastName">
+      <div class="row">
+        <!-- User Profile Form -->
+        <div class="col-md-4">
+          <h1>Update Profile</h1>
+          <div v-if="user">
+            <div v-for="update in updates" class="alert alert-success alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+              <strong>Update Successful:</strong> Your information has been updated. 
+            </div>
+            <ul>
+              <li class="text-danger" v-for="error in errors">{{ error }}</li>
+            </ul>
+            <div> <!-- This is where a user can update their personal information -->
+              <div class="form-group">
+                <label>First Name:</label> 
+                <input type="text" class="form-control" v-model="firstName">
+                <label>Last Name:</label>
+                <input type="text" class="form-control" v-model="lastName">
+              </div>
+              <div class="form-group">
+                <label>Email:</label>
+                <input  type="email" class="form-control" v-model="email">
+              </div>
+              <div class="form-group">
+                <label>Age:</label> 
+                <input type="number" class="form-control" v-model="age">
+              </div>
+              <div class="form-group">
+                <label>Gender:</label>
+                <select v-model="gender">
+                  <option disabled>Please Choose One...</option>
+                  <option value="0">Male</option>
+                  <option value="1">Female</option>
+                  <option value="2">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>I Prefer:</label>
+                <select v-model="preference" text="black">
+                  <option disabled>Please Choose One...</option>
+                  <option value="0">People of opposite gender</option>
+                  <option value="1">People of the same gender</option>
+                  <option value="2">Both</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Password:</label>
+                <input placeholder="Enter Password Here..." type="password" class="form-control" v-model="password">
+              </div>
+              <div class="form-group">
+                <label>Password confirmation:</label>
+                <input placeholder="Confirm Password Here..." type="password" class="form-control" v-model="passwordConfirmation">
+              </div>
+              <button class="btn btn-primary" v-on:click="submit()">Submit</button>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Email:</label>
-          <input v-bind:placeholder="user.email" type="email" class="form-control" v-model="email">
+        <div class="col-md-2"></div>
+        <div class="col-md-6">
+          <div class="card bg-primary">
+            <img id="previewPic" class="card-img-top img-fluid clickable-element" src="https://s3.amazonaws.com/churchtracblog/wp-content/uploads/2017/09/Antu_insert-image.svg_-846x846.png">
+            <div class="card-body">
+              <input id="newPic" type="file" v-on:change="addPicture()" class="form-control-file">
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Age:</label> 
-          <input v-bind:placeholder="user.age" type="number" class="form-control" v-model="age">
-        </div>
-        <div class="form-group">
-          <label>Gender:</label>
-          <select v-model="gender">
-            <option disabled>Please Choose One...</option>
-            <option value="0">Male</option>
-            <option value="1">Female</option>
-            <option value="2">Other</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>I Prefer:</label>
-          <select v-model="preference" text="black">
-            <option disabled>Please Choose One...</option>
-            <option value="0">People of opposite gender</option>
-            <option value="1">People of the same gender</option>
-            <option value="2">Both</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Password:</label>
-          <input placeholder="Enter Password Here..." type="password" class="form-control" v-model="password">
-        </div>
-        <div class="form-group">
-          <label>Password confirmation:</label>
-          <input placeholder="Confirm Password Here..." type="password" class="form-control" v-model="passwordConfirmation">
-        </div>
-        <button class="btn btn-primary" v-on:click="submit()">Submit</button>
       </div>
-
     </div>
   </div>
 </template>

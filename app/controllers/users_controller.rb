@@ -42,7 +42,23 @@ class UsersController < ApplicationController
   end
 
   def update
-    
+    @user = User.find(current_user.id)
+
+    @user.f_name = params[:f_name] || @user.f_name
+    @user.l_name = params[:l_name] || @user.l_name
+    @user.email = params[:email] || @user.email
+    @user.age = params[:age] || @user.age
+    @user.gender = params[:gender] || @user.gender
+    @user.preference = params[:preference] || @user.preference
+    @user.password = params[:password] || @user.password
+    @user.password_confirmation = params[:password_confirmation] || @user.password_confirmation
+
+
+    if @user.save
+      render "show.json.jbuilder"
+    else
+      render json: {errors: @user.errors.full_messages}, status: :unprocessable_entity
+    end
   end
 
   def destroy
