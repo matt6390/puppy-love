@@ -215,14 +215,27 @@
   <div class="vue-component">
     <div class="container">
       <h3>Possible Matches:</h3>
-      <div v-bind:id="users[0].id" v-if="users[0]" class="card col-md-4 animated" data-animate-duration="1">
-        <p class="card-text">{{ users[0] }}</p>
-        <span>
-          <!-- <button class="left-button" v-on:click="swipeLeft(user)">Swipe Left</button> -->
-          <i class="lnr lnr-cross-circle icon-3x" v-on:click="swipeLeft(users[0])"></i>
-          <i class="lnr lnr-checkmark-circle icon-3x float-right" v-on:click="swipeRight(users[0])"></i>
-          <!-- <button class="right-button" v-on:click="swipeRight(user)">Swipe Right</button> -->
-        </span>
+      <div class="row">
+        <div class="col-md-4"></div>
+        <div v-bind:id="users[0].id" v-if="users[0]" class="card col-md-4 animated" data-animate-duration="1">
+
+          <div v-if="users[0].pictures">
+            <img class="card-img-top img-fluid" v-bind:src="users[0].pictures[0].url"></img>
+          </div>
+          <div v-else>
+            <img class="card-img-top img-fluid" src="https://s3.amazonaws.com/churchtracblog/wp-content/uploads/2017/09/Antu_insert-image.svg_-846x846.png">
+          </div>
+
+          <h4 class="card-title">{{ users[0].f_name }}</h4>
+          <h6 class="card-subtitle text-muted"> {{ users[0].age }}</h6>
+          <span>
+            <!-- <button class="left-button" v-on:click="swipeLeft(user)">Swipe Left</button> -->
+            <i class="lnr lnr-cross-circle icon-3x" v-on:click="swipeLeft(users[0])"></i>
+            <i class="lnr lnr-checkmark-circle icon-3x float-right" v-on:click="swipeRight(users[0])"></i>
+            <!-- <button class="right-button" v-on:click="swipeRight(user)">Swipe Right</button> -->
+          </span>
+        </div>
+        <div class="col-md-4"></div>
       </div>
     </div>
   </div>

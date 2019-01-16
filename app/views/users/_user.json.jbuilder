@@ -5,8 +5,10 @@ json.age user.age
 json.gender user.gender
 json.email user.email
 json.preference user.preference
-json.pictures user.pictures do |picture|
-  json.url picture.url
+if user.pictures
+  json.pictures user.pictures do |picture|
+    json.url picture.url
+  end
 end
 json.created_at user.friendly_created_at
 json.updated_at user.friendly_updated_at

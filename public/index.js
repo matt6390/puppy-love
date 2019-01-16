@@ -4,8 +4,9 @@ var HomePage = {
   template: "#home-page",
   data: function() {
     return {
-      message: "Welcome to Vue.js!",
-      users: [{user:[]}]
+      users: [{user:{}}],
+      message: "Welcome to Vue.js!"
+
     };
   },
   created: function() {
