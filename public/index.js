@@ -191,6 +191,7 @@ var UserEditPage = {
   data: function() {
     return {
       user: {id:{}, pictures:[], f_name:{}, l_name:{}, email:{}, age:{}, gender:{}, preference:{}},
+      pictureId: "",
       firstName: "",
       lastName: "",
       email: "",
@@ -212,11 +213,21 @@ var UserEditPage = {
       this.age = response.data.age;
       this.gender = response.data.gender;
       this.preference = response.data.preference;
+      this.pictureId = response.data.pictures[0].id;
     }.bind(this)).catch(function(error) {
       console.log(error.response.data.errors);
     });
   },
   methods: {
+    removePicture: function() {
+      axios.delete("/pictures/" + this.pictureId).then(function(response) {
+        location.reload();
+      }.bind(this)).catch(function(errors) {
+        console.log(errors.response.data.error);
+      });
+
+    },
+
     addPicture: function() {
       var picture = document.getElementById("newPic").files[0];
       // set the preview img to selected image
@@ -241,7 +252,7 @@ var UserEditPage = {
           };
 
           axios.post("/pictures", params).then(function(response) {
-            console.log(response.data);
+            location.reload();
           });
 
         }.bind(this));

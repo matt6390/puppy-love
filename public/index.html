@@ -356,7 +356,7 @@
             </div>
             <div class="card-body">
               <input id="newPic" type="file" v-on:change="addPicture()" class="form-control-file">
-              <button v-if="user.pictures[0]" class="btn btn-danger btn-inverse">Remove Picture</button>
+              <button v-if="user.pictures[0]" v-on:click="removePicture()" class="btn btn-danger btn-inverse">Remove Picture</button>
               <button v-else class="btn btn-red-dark btn-inverse "><s>Remove Picture</s></button>
             </div>
           </div>

@@ -7,6 +7,7 @@ json.email user.email
 json.preference user.preference
 if user.pictures
   json.pictures user.pictures do |picture|
+    json.id picture.id
     json.url picture.url
   end
 end
