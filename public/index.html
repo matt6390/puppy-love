@@ -277,10 +277,10 @@
 <template id="user-edit-page">
   <div class="vue-component">
     <div class="container">
+      <h1>Update Profile</h1>
       <div class="row">
         <!-- User Profile Form -->
         <div class="col-md-4">
-          <h1>Update Profile</h1>
           <div v-if="user">
             <div v-for="update in updates" class="alert alert-success alert-dismissible" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
@@ -334,13 +334,30 @@
             </div>
           </div>
         </div>
-        <div class="col-md-2"></div>
+        <div class="col-md-2">
+          <h6>Radio Is Favorite</h6>
+          <fieldset class="list-group">
+            <div v-for="picture in user.pictures" class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input">
+                <img v-bind:src="picture.url" class="img-fluid">
+              </label>
+            </div>
+          </fieldset>
+        </div>
         <div class="col-md-6">
           <div class="card bg-primary">
-            <img v-if="user.pictures[0]" id="previewPic" class="card-img-top img-fluid clickable-element" v-bind:src="user.pictures[0].url">
-            <img v-else id="previewPic" class="card-img-top img-fluid clickable-element" src="https://s3.amazonaws.com/churchtracblog/wp-content/uploads/2017/09/Antu_insert-image.svg_-846x846.png">
+            <div  v-if="user.pictures[0]" >
+              <img id="previewPic" class="card-img-top img-fluid clickable-element" v-bind:src="user.pictures[0].url">
+            </div>
+
+            <div v-else>
+              <img id="previewPic" class="card-img-top img-fluid clickable-element" src="https://s3.amazonaws.com/churchtracblog/wp-content/uploads/2017/09/Antu_insert-image.svg_-846x846.png">
+            </div>
             <div class="card-body">
               <input id="newPic" type="file" v-on:change="addPicture()" class="form-control-file">
+              <button v-if="user.pictures[0]" class="btn btn-danger btn-inverse">Remove Picture</button>
+              <button v-else class="btn btn-red-dark btn-inverse "><s>Remove Picture</s></button>
             </div>
           </div>
         </div>

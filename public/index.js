@@ -45,7 +45,6 @@ var HomePage = {
     swipeLeft: function(profile) {
       var params = {swiped_id: profile.id, status: 0};
       axios.post("/likes", params).then(function(response) {
-        console.log(response.data);
         this.removeProfile(profile, "left");
 
       }.bind(this)).catch(function(errors) {

@@ -5,7 +5,6 @@ class PicturesController < ApplicationController
 
   def show
     @pictures = User.find(params[:id]).pictures
-
     render json: @pictures.as_json
   end
 
@@ -19,7 +18,6 @@ class PicturesController < ApplicationController
     else
       render json: {errors: @picture.errors.full_messages}, status: :bad_request
     end
-    
   end
 
   def update
@@ -27,6 +25,8 @@ class PicturesController < ApplicationController
   end
 
   def destroy
-    
+    @picture = Picture.find(params[:id])
+    @picture.delete
+    render json: {message: "Picture deleted"}
   end
 end

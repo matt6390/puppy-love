@@ -2,6 +2,7 @@
   "name": "puppy-love",
   "private": true,
   "dependencies": {
+    "jshint": "^2.9.7",
     "vue-chat-scroll": "^1.3.5",
     "vue-sticky-scroll": "^0.1.0"
   }
