@@ -24,8 +24,9 @@ class PicturesController < ApplicationController
   def update
     @pictures = current_user.pictures.where("id = ? OR profile_status = ?", params[:id], true)
 
-
+    # makes sure that there are at least 2 pictures to be 'swapped'
     if @pictures.length == 2
+      # swap profile_status for both pics
       @pictures.each do |picture|
         if picture.profile_status == true
           picture.profile_status = false
@@ -33,7 +34,7 @@ class PicturesController < ApplicationController
           picture.profile_status = true
         end
       end
-
+      # save the pics
       @pictures.each do |picture|
         if picture.save
           # render json: {message: "Profile Picture Updated"}
@@ -41,6 +42,7 @@ class PicturesController < ApplicationController
           render json: {errors: picture.errors.full_messages}, status: :bad_request
         end
       end
+    # If only one pic is returned by the first line, lets the user know
     else  
       render json: {message: "Already your Profile Pic"}
     end

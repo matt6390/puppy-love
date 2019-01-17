@@ -43,7 +43,7 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(current_user.id)
-
+    
     @user.f_name = params[:f_name] || @user.f_name
     @user.l_name = params[:l_name] || @user.l_name
     @user.email = params[:email] || @user.email
@@ -52,7 +52,7 @@ class UsersController < ApplicationController
     @user.preference = params[:preference] || @user.preference
     @user.password = params[:password] || @user.password
     @user.password_confirmation = params[:password_confirmation] || @user.password_confirmation
-
+    # binding.pry
 
     if @user.save
       render "show.json.jbuilder"

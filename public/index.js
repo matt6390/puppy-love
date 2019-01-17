@@ -86,9 +86,20 @@ var HomePage = {
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.errors);
       });
+    },
+    profilePic: function() {
+      var pictures = this.users[0].pictures;
+      var url = pictures[0].url;
+      pictures.forEach(function(pic) {
+        if (pic.profile_status === true) {
+          url = pic.url;
+        }
+      });
+      return url;
     }
   },
-  computed: {}
+  computed: {
+  }
 };
 
 var ConversationsPage = {
@@ -287,28 +298,37 @@ var UserEditPage = {
     },
 
     submit: function() {
-      var params = {
-        f_name: this.firstName,
-        l_name: this.lastName,
-        email: this.email,
-        age: this.age,
-        gender: this.gender,
-        preference: this.preference,
-        password: this.password,
-        password_confirmation: this.password_confirmation
-      };
-      axios.patch("/users/" + this.user.id, params).then(function(response) {
-        this.user = response.data;
-        this.firstName = response.data.f_name;
-        this.lastName = response.data.l_name;
-        this.email = response.data.email;
-        this.age = response.data.age;
-        this.gender = response.data.gender;
-        this.preference = response.data.preference;
-        this.updates.push("updated");
-      }.bind(this)).catch(function(error) {
-        console.log(error.response.data.errors);
-      });
+      var params = {};
+      if (this.password === this.passwordConfirmation && this.password !== "") {
+        params = {
+          f_name: this.firstName,
+          l_name: this.lastName,
+          email: this.email,
+          age: this.age,
+          gender: this.gender,
+          preference: this.preference,
+          password: this.password,
+          password_confirmation: this.password_confirmation
+        };
+
+        axios.patch("/users/" + this.user.id, params).then(function(response) {
+          this.user = response.data;
+          this.firstName = response.data.f_name;
+          this.lastName = response.data.l_name;
+          this.email = response.data.email;
+          this.age = response.data.age;
+          this.gender = response.data.gender;
+          this.preference = response.data.preference;
+          this.updates = [];
+          this.updates.push("updated");
+        }.bind(this)).catch(function(errors) {
+          console.log(errors.response.data.error);
+        });
+      } else {
+        this.errors.pop();
+        this.errors.push("Password and Password Convfirmation must match");
+      }
+
     }
   },
   computed: {}
