@@ -22,7 +22,6 @@ var HomePage = {
   },
   methods: {
     removeProfile: function(profile, direction) {
-      console.log(this.users);
       var swipe = '';
       if (direction === "left") {
         swipe = "bounceOutLeft";
@@ -33,12 +32,14 @@ var HomePage = {
       var card = document.getElementById(profile.id);
 
       card.classList.add(swipe);
+      // removes the class when the animation is done
       setTimeout(function() {
-        console.log('done');
         card.classList.remove(swipe);
-        this.users.shift();
-        console.log(this.users);
       }.bind(this), 500);  
+      // takes a second for the vue to change when I .shift() the array, so I'm starting it 350ms before the animation ends. Seems to work well enough until I have better solution
+      setTimeout(function() {
+        this.users.shift();
+      }.bind(this), 150);
     },
 
     swipeLeft: function(profile) {
@@ -237,6 +238,7 @@ var UserEditPage = {
   methods: {
     updateProfilePic: function(picture) {
       axios.patch("/pictures/" + picture.id).then(function(response) {
+        // makes sure that you didnt ask to change your current profilePic to profilePic
         if (!response.data.message) {
           location.reload();
         } else {
