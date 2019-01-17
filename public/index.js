@@ -400,10 +400,23 @@ var SignupPage = {
         password: this.password,
         password_confirmation: this.passwordConfirmation
       };
+      var auth = { auth:{ email: this.email, password: this.password}};
       axios
         .post("/users", params)
         .then(function(response) {
-          router.push("/login");
+          axios
+            .post("/user_token", auth)
+            .then(function(response) {
+              axios.defaults.headers.common["Authorization"] =
+                "Bearer " + response.data.jwt;
+              localStorage.setItem("jwt", response.data.jwt);
+              router.push("/user-edit");
+            })
+            .catch(
+              function(error) {
+                router.push("/login");
+              }.bind(this)
+            );
         })
         .catch(
           function(error) {

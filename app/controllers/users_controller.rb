@@ -10,6 +10,13 @@ class UsersController < ApplicationController
     else
       @users = @all_users
     end
+
+    # If the ydont have a picture, then they wont show up for you. Gotta at least have something
+    @users.each do |user|
+      if user.pictures == []
+        @users = @users - [user]
+      end
+    end
     
     # Clear out all the people that we don't want to see, also shuffles
     @users = current_user.clear_likes(@users, @likes).shuffle
@@ -43,7 +50,7 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(current_user.id)
-    
+
     @user.f_name = params[:f_name] || @user.f_name
     @user.l_name = params[:l_name] || @user.l_name
     @user.email = params[:email] || @user.email
