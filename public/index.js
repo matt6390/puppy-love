@@ -38,8 +38,7 @@ var HomePage = {
         card.classList.remove(swipe);
         this.users.shift();
         console.log(this.users);
-      }.bind(this), 500);
-      
+      }.bind(this), 500);  
     },
 
     swipeLeft: function(profile) {
@@ -80,6 +79,7 @@ var HomePage = {
         }
       }.bind(this));
     },
+
     myLikes: function() {
       axios.get('/likes').then(function(response) {
         console.log(response.data);
@@ -87,6 +87,7 @@ var HomePage = {
         console.log(errors.response.data.errors);
       });
     },
+
     profilePic: function() {
       var pictures = this.users[0].pictures;
       var url = pictures[0].url;
@@ -236,8 +237,11 @@ var UserEditPage = {
   methods: {
     updateProfilePic: function(picture) {
       axios.patch("/pictures/" + picture.id).then(function(response) {
-        console.log(response.data);
-        location.reload();
+        if (!response.data.message) {
+          location.reload();
+        } else {
+          console.log(response.data.message);
+        }
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.error);
       });

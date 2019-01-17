@@ -217,7 +217,7 @@
       <h3>Possible Matches:</h3>
       <div class="row">
         <div class="col-md-4"></div>
-        <div v-bind:id="users[0].id" v-if="users[0]" class="card col-md-4 animated" data-animate-duration="1">
+        <div v-bind:id="users[0].id" v-if="users[0]" class="card see-through col-md-4 animated" data-animate-duration="1">
 
           <div v-if="users[0].pictures">
             <img class="card-img-top img-fluid" v-bind:src="profilePic()"></img>
@@ -292,7 +292,7 @@
                 <strong>Update Error:</strong>{{ error }}!
             </div>
             </ul>
-            <div class="outline see-through"> <!-- This is where a user can update their personal information -->
+            <div class="see-through"> <!-- This is where a user can update their personal information -->
               <div class="form-group">
                 <label>First Name:</label> 
                 <input type="text" class="form-control" v-model="firstName">
@@ -341,9 +341,16 @@
           <h6>Selected Pic is first to appear for others</h6>
           <fieldset class="list-group">
             <div v-for="picture in user.pictures" class="form-check">
-              <label class="form-check-label">
-                <img v-bind:src="picture.url" class="img-fluid" v-on:click="updateProfilePic(picture)">
-              </label>
+              <div v-if="picture.profile_status === true" class="outline">
+                <label class="form-check-label">
+                  <img v-bind:src="picture.url" class="img-fluid" v-on:click="updateProfilePic(picture)">
+                </label>
+              </div>
+              <div v-else>
+                <label class="form-check-label">
+                  <img v-bind:src="picture.url" class="img-fluid" v-on:click="updateProfilePic(picture)">
+                </label>
+              </div>
             </div>
           </fieldset>
         </div>
