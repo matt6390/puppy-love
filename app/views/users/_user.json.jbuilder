@@ -9,6 +9,7 @@ if user.pictures
   json.pictures user.pictures do |picture|
     json.id picture.id
     json.url picture.url
+    json.profile_status picture.profile_status
   end
 end
 json.created_at user.friendly_created_at

@@ -335,11 +335,11 @@
           </div>
         </div>
         <div class="col-md-2">
-          <h6>Radio Is Favorite</h6>
+          <h6>Selected Pic is first to appear for others</h6>
           <fieldset class="list-group">
             <div v-for="picture in user.pictures" class="form-check">
               <label class="form-check-label">
-                <input type="radio" class="form-check-input">
+                <input type="radio" class="form-check-input" v-on:click="updateProfilePic(picture)">
                 <img v-bind:src="picture.url" class="img-fluid">
               </label>
             </div>
@@ -347,8 +347,8 @@
         </div>
         <div class="col-md-6">
           <div class="card bg-primary">
-            <div  v-if="user.pictures[0]" >
-              <img id="previewPic" class="card-img-top img-fluid clickable-element" v-bind:src="user.pictures[0].url">
+            <div  v-if="pictureId" >
+              <img id="previewPic" class="card-img-top img-fluid clickable-element" v-bind:src="pictureId.url">
             </div>
 
             <div v-else>

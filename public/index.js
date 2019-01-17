@@ -213,14 +213,27 @@ var UserEditPage = {
       this.age = response.data.age;
       this.gender = response.data.gender;
       this.preference = response.data.preference;
-      this.pictureId = response.data.pictures[0].id;
+      this.pictureId = response.data.pictures.find(function(picture) {
+        if (picture.profile_status === true) {
+          return picture.id;
+        }
+      }) || response.data.pictures[0];
     }.bind(this)).catch(function(error) {
       console.log(error.response.data.errors);
     });
   },
   methods: {
+    updateProfilePic: function(picture) {
+      axios.patch("/pictures/" + picture.id).then(function(response) {
+        console.log(response.data);
+        location.reload();
+      }.bind(this)).catch(function(errors) {
+        console.log(errors.response.data.error);
+      });
+    },
+
     removePicture: function() {
-      axios.delete("/pictures/" + this.pictureId).then(function(response) {
+      axios.delete("/pictures/" + this.pictureId.id).then(function(response) {
         location.reload();
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.error);
@@ -246,11 +259,24 @@ var UserEditPage = {
         // completed upload
         upload.snapshot.ref.getDownloadURL().then(function(downloadURL) {
           // now we will create a picture reference in the Backend so that we do not have to make a reference to firebase every single time, and can rather just make fast queries
-          var params = {
-            user_id: this.user.id,
-            url: downloadURL
-          };
 
+          var params = {};
+          if (this.pictureId) {
+            console.log("has profileId");
+            params = {
+              user_id: this.user.id,
+              url: downloadURL,
+              profile_status: false
+            };
+          } else {
+            console.log("doesnt have profileId");
+
+            params = {
+              user_id: this.user.id,
+              url: downloadURL,
+              profile_status: true
+            };
+          }
           axios.post("/pictures", params).then(function(response) {
             location.reload();
           });
