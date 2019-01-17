@@ -9,15 +9,19 @@ class PicturesController < ApplicationController
   end
 
   def create 
-    @picture = Picture.new(
-                            url: params[:url],
-                            user_id: params[:user_id],
-                            profile_status: params[:profile_status]
-                          )
-    if @picture.save
-      render json: @picture.as_json
+    if current_user.pictures.length < 4
+      @picture = Picture.new(
+                              url: params[:url],
+                              user_id: params[:user_id],
+                              profile_status: params[:profile_status]
+                            )
+      if @picture.save
+        render json: @picture.as_json
+      else
+        render json: {errors: @picture.errors.full_messages}, status: :bad_request
+      end
     else
-      render json: {errors: @picture.errors.full_messages}, status: :bad_request
+      render  json: {message: "You can only have 4 pictures at a time. If you want to add another, we suggest removing a current one."}
     end
   end
 

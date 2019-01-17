@@ -295,7 +295,11 @@ var UserEditPage = {
             };
           }
           axios.post("/pictures", params).then(function(response) {
-            location.reload();
+            if (response.data.message) {
+              console.log(response.data.message);
+            } else {
+              location.reload();
+            }
           });
 
         }.bind(this));
