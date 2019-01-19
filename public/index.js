@@ -344,6 +344,35 @@ var UserEditPage = {
   computed: {}
 };
 
+var PuppiesSearchPage = {
+  template: "#puppies-search-page",
+  data: function() {
+    return {
+      message: "Welcome to Vue.js!"
+
+    };
+  },
+  mounted: function() {
+    setTimeout(function() {
+      var map;
+
+      map = new google.maps.Map(document.getElementById('googleMaps'), {
+        center: {lat: -12.1430911, lng: -77.0227697},
+        zoom: 12
+      });
+    }, 1);
+  },
+  created: function() {
+    
+  },
+  methods: {
+    createMap: function() {
+    }
+  },
+  computed: {
+  }
+};
+
 var LoginPage = {
   template: "#login-page",
   data: function() {
@@ -444,6 +473,7 @@ var router = new VueRouter({
     { path: "/", component: HomePage },
     { path: "/conversations", component: ConversationsPage },
     { path: "/user-edit", component: UserEditPage },
+    { path: "/puppies", component: PuppiesSearchPage },
     { path: "/signup", component: SignupPage },
     { path: "/login", component: LoginPage },
     { path: "/logout", component: LogoutPage }
@@ -454,7 +484,7 @@ var router = new VueRouter({
 });
 
 
-var app = new Vue({
+var app = window.App = new Vue({
   el: "#vue-app",
   router: router,
   created: function() {

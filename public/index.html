@@ -36,7 +36,8 @@
   <link href='http://fonts.googleapis.com/css?family=Rambla:400,700' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Calligraffitti' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
-  
+  <!-- Google Maps -->
+  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3nW20txucLzHPDuhf1_HMYxjKNqBQjMM&callback=createMap" async defer></script> -->
   <!--Plugin: Retina.js (high def image replacement) - @see: http://retinajs.com/-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
   <!-- Firebase Scripts -->
@@ -111,7 +112,7 @@
                 <li class="nav-item dropdown dropdown-mega-menu active">
                   <div class="btn-group mt-4" role="group" aria-label="Basic example">
                   <button type="button" class="btn btn-dark"><a href="/#/">Home</a></button>
-                  <button type="button" class="btn btn-dark"><a href="/#/conversations">Conversations</a><button type="button" class="btn btn-dark"><a href="/#/user-edit">Edit Profile</a></button>
+                  <button type="button" class="btn btn-dark"><a href="/#/conversations">Conversations</a><button type="button" class="btn btn-dark"><a href="/#/user-edit">Edit Profile</a></button><button type="button" class="btn btn-dark"><a href="/#/puppies">Find Puppies</a></button>
                 </div>
                 </li>
               </ul>
@@ -198,6 +199,19 @@
     </footer>
   </div>
 </body>
+<!--   <script>
+    function createMap() {
+      var map;
+
+      map = new google.maps.Map(document.getElementById('googleMaps'), {
+        center: {lat: -12.1430911, lng: -77.0227697},
+        zoom: 12
+      });
+      console.log(map);
+    }
+  </script> -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3nW20txucLzHPDuhf1_HMYxjKNqBQjMM"></script>
+  
   <!--jQuery 3.2.1 via CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <!-- Popper 1.12.9 via CDN, needed for Bootstrap Tooltips & Popovers -->
@@ -371,6 +385,15 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</template>
+
+<template id="puppies-search-page">
+  <div class="vue-component">
+    <div class="container">
+      <h4>{{ message }}</h4>
+      <div style="width:100%;height:400px;" id="googleMaps"></div>
     </div>
   </div>
 </template>
