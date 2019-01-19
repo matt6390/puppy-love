@@ -203,12 +203,13 @@ var UserEditPage = {
   template: "#user-edit-page",
   data: function() {
     return {
-      user: {id:{}, pictures:[], f_name:{}, l_name:{}, email:{}, age:{}, gender:{}, preference:{}},
+      user: {id:{}, pictures:[], f_name:{}, l_name:{}, email:{}, age:{}, zip:{}, gender:{}, preference:{}},
       pictureId: "",
       firstName: "",
       lastName: "",
       email: "",
       age: "",
+      zip: "",
       gender: "",
       preference: "",
       password: "",
@@ -224,6 +225,7 @@ var UserEditPage = {
       this.lastName = response.data.l_name;
       this.email = response.data.email;
       this.age = response.data.age;
+      this.zip = response.data.zip;
       this.gender = response.data.gender;
       this.preference = response.data.preference;
       this.pictureId = response.data.pictures.find(function(picture) {
@@ -348,25 +350,74 @@ var PuppiesSearchPage = {
   template: "#puppies-search-page",
   data: function() {
     return {
-      message: "Welcome to Vue.js!"
+      message: "Welcome to Vue.js!",
+      corsUrl: "https://cors-anywhere.herokuapp.com/",
+      puppyKey: "?format=json&location=60025&",
+      puppyUrl: "http://api.petfinder.com/"
 
     };
   },
   mounted: function() {
-    setTimeout(function() {
-      var map;
-
-      map = new google.maps.Map(document.getElementById('googleMaps'), {
-        center: {lat: -12.1430911, lng: -77.0227697},
-        zoom: 12
-      });
-    }, 1);
-  },
-  created: function() {
     
   },
+  created: function() {
+    axios.get("/users/keys").then(function(response) {
+      this.puppyKey = this.puppyKey + "key=" + response.data.pet_key;
+    }.bind(this)).catch(function(errors) {
+      console.log(errors.response.data.error);
+    });
+
+
+
+
+    // the little timer allows for the google script to load?
+    // MAYBE, JUST A GUESS
+    setTimeout(function() {
+      var map;
+      var center = {lat: 42.066477, lng: -87.762588};
+      map = new google.maps.Map(document.getElementById('googleMaps'), {
+        center: center,
+        zoom: 10
+      });
+      var marker = new google.maps.Marker({position: center, map: map});
+      this.map = map;
+    }, 300);
+    console.log(this.map);
+
+  },
   methods: {
-    createMap: function() {
+    findPuppies: function() { 
+      axios.get(this.corsUrl + this.puppyUrl + "shelter.find" + this.puppyKey).then(function(response) {
+        var shelters = response.data["petfinder"]['shelters']['shelter'];
+        var map;
+        var center = {lat: parseInt(shelters[0]['latitude']['$t'], 10), lng: parseInt(shelters[0]['longitude']['$t'], 10)};
+        map = new google.maps.Map(document.getElementById('googleMaps'), {
+          center: center,
+          zoom: 10
+        });
+        var marker = new google.maps.Marker({position: center, map: map});
+
+        shelters.forEach(function(shelter) {
+          console.log(shelter['latitude']['$t']);
+          console.log(parseInt(shelter['longitude']['$t'], 10));
+
+          var position = new google.maps.LatLng(parseInt(shelter['latitude']['$t'], 10), parseInt(shelter['longitude']['$t'], 10));
+          var marker = new google.maps.Marker({postion: position, map: map});
+        });
+        console.log(response.data["petfinder"]["lastOffset"]);
+      });
+    },
+
+    logGoogle: function() {
+      var map;
+      var center = {lat: -12.1430911, lng: -77.0227697};
+      map = new google.maps.Map(document.getElementById('googleMaps'), {
+        center: center,
+        zoom: 12
+      });
+      var marker = new google.maps.Marker({position: center, map: map});
+      var map = document.getElementById('googleMaps');
+      console.log(map);
     }
   },
   computed: {
@@ -414,6 +465,7 @@ var SignupPage = {
       lastName: "",
       email: "",
       age: "",
+      zip: "",
       gender: "",
       preference: "",
       password: "",
@@ -428,6 +480,7 @@ var SignupPage = {
         l_name: this.lastName,
         email: this.email,
         age: this.age,
+        zip: this.zip,
         gender: this.gender,
         preference: this.preference,
         password: this.password,

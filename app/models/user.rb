@@ -3,6 +3,7 @@ class User < ApplicationRecord
   validates :f_name, presence: true
   validates :l_name, presence: true
   validates :age, presence: true
+  validates :zip, presence: true, numericality: { only_integer: true }
   validates :gender, presence: true
   validates :email, presence: true, uniqueness: true
   validates :email, format: { with: /@/, message: "Must be a valid email address"}

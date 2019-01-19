@@ -2,6 +2,7 @@ json.id user.id
 json.f_name user.f_name
 json.l_name user.l_name
 json.age user.age
+json.zip user.zip
 json.gender user.gender
 json.email user.email
 json.preference user.preference

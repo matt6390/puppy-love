@@ -24,6 +24,14 @@ class UsersController < ApplicationController
     render 'index.json.jbuilder'
   end
 
+  def keys
+    if current_user
+      keys = {pet_key: "e7d051c0ba27efcd3c3babfeb86ebeaa", google_key: "AIzaSyA3nW20txucLzHPDuhf1_HMYxjKNqBQjMM"}
+      render json: keys.as_json
+    end
+    
+  end
+
   def show
     @user = current_user
 
@@ -36,6 +44,7 @@ class UsersController < ApplicationController
                       l_name: params[:l_name],
                       email: params[:email],
                       age: params[:age],
+                      zip: params[:zip],
                       gender: params[:gender],
                       preference: params[:preference],
                       password: params[:password],
@@ -55,6 +64,7 @@ class UsersController < ApplicationController
     @user.l_name = params[:l_name] || @user.l_name
     @user.email = params[:email] || @user.email
     @user.age = params[:age] || @user.age
+    @user.zip = params[:zip] || @user.zip
     @user.gender = params[:gender] || @user.gender
     @user.preference = params[:preference] || @user.preference
     @user.password = params[:password] || @user.password
