@@ -26,7 +26,9 @@ class UsersController < ApplicationController
 
   def keys
     if current_user
-      keys = {pet_key: "e7d051c0ba27efcd3c3babfeb86ebeaa", google_key: "AIzaSyA3nW20txucLzHPDuhf1_HMYxjKNqBQjMM"}
+      pet_key = Rails.application.credentials[:PET_KEY].to_s
+      google_key = Rails.application.credentials[:GOOGLE_KEY].to_s
+      keys = {pet_key: pet_key, google_key: google_key}
       render json: keys.as_json
     end
     

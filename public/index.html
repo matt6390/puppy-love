@@ -112,7 +112,7 @@
                 <li class="nav-item dropdown dropdown-mega-menu active">
                   <div class="btn-group mt-4" role="group" aria-label="Basic example">
                   <button type="button" class="btn btn-dark"><a href="/#/">Home</a></button>
-                  <button type="button" class="btn btn-dark"><a href="/#/conversations">Conversations</a><button type="button" class="btn btn-dark"><a href="/#/user-edit">Edit Profile</a></button><button type="button" class="btn btn-dark"><a href="/#/puppies">Puppies Near Me</a></button>
+                  <button type="button" class="btn btn-dark"><a href="/#/conversations">Conversations</a><button type="button" class="btn btn-dark"><a href="/#/user-edit">Edit Profile</a></button><button type="button" class="btn btn-dark"><a href="/#/shelters">Shelters Near Me</a></button>
                 </div>
                 </li>
               </ul>
@@ -382,11 +382,11 @@
   </div>
 </template>
 
-<template id="puppies-search-page">
+<template id="shelters-search-page">
   <div class="vue-component">
     <div class="container">
       <h4>{{ message }}</h4>
-      <button class="btn btn-primary btn-inverse" v-on:click="findPuppies()">Puppies Near Me</button>
+      <button class="btn btn-primary btn-inverse" v-on:click="findPuppies()">Shelters Near Me</button>
       <div style="width:100%;height:400px;" id="googleMaps"></div>
     </div>
   </div>

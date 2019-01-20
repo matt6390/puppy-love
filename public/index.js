@@ -346,8 +346,8 @@ var UserEditPage = {
   computed: {}
 };
 
-var PuppiesSearchPage = {
-  template: "#puppies-search-page",
+var SheltersSearchPage = {
+  template: "#shelters-search-page",
   data: function() {
     return {
       message: "Welcome to Vue.js!",
@@ -366,10 +366,6 @@ var PuppiesSearchPage = {
     }.bind(this)).catch(function(errors) {
       console.log(errors.response.data.error);
     });
-
-
-
-
     // the little timer allows for the google script to load?
     // MAYBE, JUST A GUESS
     setTimeout(function() {
@@ -407,23 +403,26 @@ var PuppiesSearchPage = {
         });
 
         var infowindow = new google.maps.InfoWindow();
-
+        // sets the variables so I can use them later
         var marker, i, button;
 
+        // create a marker and corresponding button-tag for each shelter that is returned
         for (i = 0; i < shelters.length; i++) {
+          // coordinates
           var lat = parseFloat(shelters[i]['latitude']['$t']);
           var long = parseFloat(shelters[i]['longitude']['$t']);
+          // creating the button
           button = document.createElement("A");
           button.appendChild(document.createTextNode(shelters[i]["name"]["$t"]));
           button.href = "#/shelters/" + shelters[i]['id']['$t'];
           document.body.appendChild(button);
-
+          // Creates and sets the marker
           marker = new google.maps.Marker({
             position: new google.maps.LatLng(lat, long),
             map: map
           });
 
-          // When a marker is clicked, it will display the name of the facility
+          // When a marker is clicked, it will display the name of the facility, which can be clicked to go to shelter show page
           google.maps.event.addListener(marker, 'click', (function(marker, i, button) {
             return function() {
               infowindow.setContent(button);
@@ -432,18 +431,6 @@ var PuppiesSearchPage = {
           })(marker, i, button));
         }
       });
-    },
-
-    logGoogle: function() {
-      var map;
-      var center = {lat: -12.1430911, lng: -77.0227697};
-      map = new google.maps.Map(document.getElementById('googleMaps'), {
-        center: center,
-        zoom: 12
-      });
-      var marker = new google.maps.Marker({position: center, map: map});
-      var map = document.getElementById('googleMaps');
-      console.log(map);
     }
   },
   computed: {
@@ -455,9 +442,8 @@ var ShelterShowPage = {
   data: function() {
     return {
       message: "Welcome to Vue.js!",
-      routeId: this.$route.params.id,
       corsUrl: "https://cors-anywhere.herokuapp.com/",
-      puppyKey: "?format=json&count=25&location=60025&",
+      puppyKey: "?format=json&id=" + this.$route.params.id,
       puppyUrl: "http://api.petfinder.com/"
 
     };
@@ -466,7 +452,18 @@ var ShelterShowPage = {
     
   },
   created: function() {
+    axios.get("/users/keys").then(function(response) {
+      this.puppyKey = this.puppyKey + "&key=" + response.data.pet_key;
+      axios.get(this.corsUrl + this.puppyUrl + "shelter.getPets" + this.puppyKey).then(function(response) {
+        console.log(response.data['petfinder']['pets']['pet']);
+      }.bind(this)).catch(function(errors) {
+        console.log(errors.response.data.error);
+      });
 
+
+    }.bind(this)).catch(function(errors) {
+      console.log(errors.response.data.error);
+    });
   },
   methods: {
   },
@@ -576,7 +573,7 @@ var router = new VueRouter({
     { path: "/", component: HomePage },
     { path: "/conversations", component: ConversationsPage },
     { path: "/user-edit", component: UserEditPage },
-    { path: "/puppies", component: PuppiesSearchPage },
+    { path: "/shelters", component: SheltersSearchPage },
     { path: "/shelters/:id", component: ShelterShowPage },
     { path: "/signup", component: SignupPage },
     { path: "/login", component: LoginPage },
