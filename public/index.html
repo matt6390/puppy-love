@@ -396,6 +396,21 @@
   <div class="vue-component">
     <div class="container">
       <h2>{{ message }}</h2>
+      <div class="row">
+        <div class="col-md-2">
+          Row-2
+        </div>
+        <div class="col-md-10">
+          <div v-if="petsHere === 0">
+            <h2>No Animals Found Yet</h2>
+          </div>
+          <div v-else class="row">
+            <div v-for="pet in pets" class="card col-md-4">
+              <h3>{{ pet.name.$t }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

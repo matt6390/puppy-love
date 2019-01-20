@@ -30,8 +30,9 @@ class UsersController < ApplicationController
       google_key = Rails.application.credentials[:GOOGLE_KEY].to_s
       keys = {pet_key: pet_key, google_key: google_key}
       render json: keys.as_json
+    else
+      render json: {error: "Must be logged in"}
     end
-    
   end
 
   def show

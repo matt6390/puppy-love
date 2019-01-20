@@ -442,9 +442,31 @@ var ShelterShowPage = {
   data: function() {
     return {
       message: "Welcome to Vue.js!",
+      petsHere: 0,
       corsUrl: "https://cors-anywhere.herokuapp.com/",
       puppyKey: "?format=json&id=" + this.$route.params.id,
-      puppyUrl: "http://api.petfinder.com/"
+      puppyUrl: "http://api.petfinder.com/",
+      shelter: [],
+      pets: [
+        {pet:{
+          age:{},
+          animal:{},
+          breed:{},
+          contact:{},
+          desctription:{},
+          id:{},
+          media:{
+            photos:{
+              photo:[{}]
+            }
+          },
+          mix:{},
+          name:{},
+          options:{},
+          sex:{},
+          size:{},
+          status:{}
+        }}]
 
     };
   },
@@ -454,16 +476,29 @@ var ShelterShowPage = {
   created: function() {
     axios.get("/users/keys").then(function(response) {
       this.puppyKey = this.puppyKey + "&key=" + response.data.pet_key;
+
+
       axios.get(this.corsUrl + this.puppyUrl + "shelter.getPets" + this.puppyKey).then(function(response) {
-        console.log(response.data['petfinder']['pets']['pet']);
+        this.pets = response.data['petfinder']['pets']['pet'];
+        console.log(response.data['petfinder']['pets']);
+
+        axios.get(this.corsUrl + this.puppyUrl + "shelter.get" + this.puppyKey).then(function(response) {
+          this.shelter = response.data['petfinder']['shelter'];
+          console.log(response.data['petfinder']);
+        }.bind(this)).catch(function(errors) {
+          console.log(errors.response.data.error);
+        });
+
+
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.error);
       });
 
-
     }.bind(this)).catch(function(errors) {
       console.log(errors.response.data.error);
     });
+    this.petsHere = 1;
+    
   },
   methods: {
   },
