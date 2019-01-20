@@ -352,7 +352,7 @@ var PuppiesSearchPage = {
     return {
       message: "Welcome to Vue.js!",
       corsUrl: "https://cors-anywhere.herokuapp.com/",
-      puppyKey: "?format=json&count=10&location=60025&",
+      puppyKey: "?format=json&count=25&location=60025&",
       puppyUrl: "http://api.petfinder.com/"
 
     };
@@ -377,7 +377,7 @@ var PuppiesSearchPage = {
       var center = {lat: 42.066477, lng: -87.762588};
       map = new google.maps.Map(document.getElementById('googleMaps'), {
         center: center,
-        zoom: 10
+        zoom: 11
       });
       var marker = new google.maps.Marker({position: center, map: map});
     }, 300);
@@ -392,45 +392,45 @@ var PuppiesSearchPage = {
         var shelters = response.data["petfinder"]['shelters']['shelter'];
         // create the map
         var map;
+        var zoom = 11;
+        if (shelters.length > 15) {
+          zoom = 10;
+        } else if (shelters.length >= 25) {
+          zoom = 9;
+        }
+
+        // set the center of the map
         var center = {lat: parseFloat(shelters[0]['latitude']['$t'], 10), lng: parseFloat(shelters[0]['longitude']['$t'], 10)};
         map = new google.maps.Map(document.getElementById('googleMaps'), {
           center: center,
-          zoom: 10
+          zoom: zoom
         });
 
         var infowindow = new google.maps.InfoWindow();
 
-        var marker, i;
+        var marker, i, button;
 
         for (i = 0; i < shelters.length; i++) {
           var lat = parseFloat(shelters[i]['latitude']['$t']);
           var long = parseFloat(shelters[i]['longitude']['$t']);
+          button = document.createElement("A");
+          button.appendChild(document.createTextNode(shelters[i]["name"]["$t"]));
+          button.href = "#/shelters/" + shelters[i]['id']['$t'];
+          document.body.appendChild(button);
 
           marker = new google.maps.Marker({
             position: new google.maps.LatLng(lat, long),
             map: map
           });
 
-          google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          // When a marker is clicked, it will display the name of the facility
+          google.maps.event.addListener(marker, 'click', (function(marker, i, button) {
             return function() {
-              infowindow.setContent("Location");
+              infowindow.setContent(button);
               infowindow.open(map, marker);
             };
-          })(marker, i));
-
-          console.log(shelters[i]);
+          })(marker, i, button));
         }
-
-        // create the markers for each map
-        // shelters.forEach(function(shelter) {
-        //   console.log(shelter['latitude']['$t']);
-        //   console.log(parseFloat(shelter['longitude']['$t'], 10));
-
-        //   // setting lat/long
-        //   var position = new google.maps.LatLng(parseFloat(shelter['latitude']['$t'], 10), parseFloat(shelter['longitude']['$t'], 10));
-        //   var marker = new google.maps.Marker({postion: position, map: map});
-        // });
-        // var marker = new google.maps.Marker({position: center, map: map});
       });
     },
 
@@ -445,6 +445,30 @@ var PuppiesSearchPage = {
       var map = document.getElementById('googleMaps');
       console.log(map);
     }
+  },
+  computed: {
+  }
+};
+
+var ShelterShowPage = {
+  template: "#shelter-show-page",
+  data: function() {
+    return {
+      message: "Welcome to Vue.js!",
+      routeId: this.$route.params.id,
+      corsUrl: "https://cors-anywhere.herokuapp.com/",
+      puppyKey: "?format=json&count=25&location=60025&",
+      puppyUrl: "http://api.petfinder.com/"
+
+    };
+  },
+  mounted: function() {
+    
+  },
+  created: function() {
+
+  },
+  methods: {
   },
   computed: {
   }
@@ -553,6 +577,7 @@ var router = new VueRouter({
     { path: "/conversations", component: ConversationsPage },
     { path: "/user-edit", component: UserEditPage },
     { path: "/puppies", component: PuppiesSearchPage },
+    { path: "/shelters/:id", component: ShelterShowPage },
     { path: "/signup", component: SignupPage },
     { path: "/login", component: LoginPage },
     { path: "/logout", component: LogoutPage }
