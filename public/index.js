@@ -352,7 +352,7 @@ var PuppiesSearchPage = {
     return {
       message: "Welcome to Vue.js!",
       corsUrl: "https://cors-anywhere.herokuapp.com/",
-      puppyKey: "?format=json&location=60025&",
+      puppyKey: "?format=json&count=10&location=60025&",
       puppyUrl: "http://api.petfinder.com/"
 
     };
@@ -380,31 +380,57 @@ var PuppiesSearchPage = {
         zoom: 10
       });
       var marker = new google.maps.Marker({position: center, map: map});
-      this.map = map;
     }, 300);
-    console.log(this.map);
 
   },
   methods: {
     findPuppies: function() { 
+
+      // grabs the API key for Petfinder from my database
       axios.get(this.corsUrl + this.puppyUrl + "shelter.find" + this.puppyKey).then(function(response) {
+        // shelters is an [] of shelters
         var shelters = response.data["petfinder"]['shelters']['shelter'];
+        // create the map
         var map;
-        var center = {lat: parseInt(shelters[0]['latitude']['$t'], 10), lng: parseInt(shelters[0]['longitude']['$t'], 10)};
+        var center = {lat: parseFloat(shelters[0]['latitude']['$t'], 10), lng: parseFloat(shelters[0]['longitude']['$t'], 10)};
         map = new google.maps.Map(document.getElementById('googleMaps'), {
           center: center,
           zoom: 10
         });
-        var marker = new google.maps.Marker({position: center, map: map});
 
-        shelters.forEach(function(shelter) {
-          console.log(shelter['latitude']['$t']);
-          console.log(parseInt(shelter['longitude']['$t'], 10));
+        var infowindow = new google.maps.InfoWindow();
 
-          var position = new google.maps.LatLng(parseInt(shelter['latitude']['$t'], 10), parseInt(shelter['longitude']['$t'], 10));
-          var marker = new google.maps.Marker({postion: position, map: map});
-        });
-        console.log(response.data["petfinder"]["lastOffset"]);
+        var marker, i;
+
+        for (i = 0; i < shelters.length; i++) {
+          var lat = parseFloat(shelters[i]['latitude']['$t']);
+          var long = parseFloat(shelters[i]['longitude']['$t']);
+
+          marker = new google.maps.Marker({
+            position: new google.maps.LatLng(lat, long),
+            map: map
+          });
+
+          google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+              infowindow.setContent("Location");
+              infowindow.open(map, marker);
+            };
+          })(marker, i));
+
+          console.log(shelters[i]);
+        }
+
+        // create the markers for each map
+        // shelters.forEach(function(shelter) {
+        //   console.log(shelter['latitude']['$t']);
+        //   console.log(parseFloat(shelter['longitude']['$t'], 10));
+
+        //   // setting lat/long
+        //   var position = new google.maps.LatLng(parseFloat(shelter['latitude']['$t'], 10), parseFloat(shelter['longitude']['$t'], 10));
+        //   var marker = new google.maps.Marker({postion: position, map: map});
+        // });
+        // var marker = new google.maps.Marker({position: center, map: map});
       });
     },
 
