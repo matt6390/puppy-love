@@ -386,8 +386,34 @@
   <div class="vue-component">
     <div class="container">
       <h4>{{ message }}</h4>
-      <button class="btn btn-primary btn-inverse" v-on:click="findPuppies()">Shelters Near Me</button>
-      <div style="width:100%;height:400px;" id="googleMaps"></div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card see-through">
+            <ul>
+              <li v-for="error in errors" class="message-body text-danger">{{ error.error }}</li>
+            </ul>
+            <div class="form-group">
+              <label class="message-body">Find Shelters Near:</label> 
+              <input type="number" class="form-control" v-model="zip">
+            </div>
+            <div class="form-group">
+              <label class="message-body">How many?</label>
+              <select v-model="count">
+                <option value="">--Please choose an option--
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="30" selected >30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-inverse" v-on:click="findPuppies()">Shelters Near Me</button>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div style="width:100%;height:400px;" id="googleMaps"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -401,13 +427,20 @@
           Row-2
         </div>
         <div class="col-md-10">
-          <div v-if="petsHere === 0">
-            <h2>No Animals Found Yet</h2>
+          <div v-if="pets[0]">
+            <div class="row">
+              <div v-for="pet in pets" class="card col-md-4 see-through">
+                <div class="card-ribbon message-body card-ribbon-top card-ribbon-left bg-primary text-white">{{pet.age.$t}}</div>
+                <img v-if="pet['media']['photos']['photo'][0]" v-bind:src="picSize(pet['media']['photos']['photo'])" class="img-fluid puppy-img">
+                <div class="card-title">
+                  <h3>{{ pet.name.$t }}: ({{pet.sex.$t}})</h3>
+                  <p>{{ petStatus(pet.status.$t) }}</p>
+                </div>
+              </div>
+            </div>
           </div>
           <div v-else class="row">
-            <div v-for="pet in pets" class="card col-md-4">
-              <h3>{{ pet.name.$t }}</h3>
-            </div>
+            <h2>No Animals Found Yet</h2>
           </div>
         </div>
       </div>

@@ -352,8 +352,11 @@ var SheltersSearchPage = {
     return {
       message: "Welcome to Vue.js!",
       corsUrl: "https://cors-anywhere.herokuapp.com/",
-      puppyKey: "?format=json&count=25&location=60025&",
-      puppyUrl: "http://api.petfinder.com/"
+      puppyKey: "",
+      puppyUrl: "http://api.petfinder.com/",
+      zip: "",
+      count: "",
+      errors:[]
 
     };
   },
@@ -362,9 +365,11 @@ var SheltersSearchPage = {
   },
   created: function() {
     axios.get("/users/keys").then(function(response) {
-      this.puppyKey = this.puppyKey + "key=" + response.data.pet_key;
+      this.puppyKey = this.puppyKey + "&key=" + response.data.pet_key;
+      this.zip = response.data.zip;
     }.bind(this)).catch(function(errors) {
       console.log(errors.response.data.error);
+      router.push("/login");
     });
     // the little timer allows for the google script to load?
     // MAYBE, JUST A GUESS
@@ -376,61 +381,66 @@ var SheltersSearchPage = {
         zoom: 11
       });
       var marker = new google.maps.Marker({position: center, map: map});
-    }, 300);
+    }, 1000);
 
   },
   methods: {
     findPuppies: function() { 
+      if (this.count !== "") {
+        axios.get(this.corsUrl + this.puppyUrl + "shelter.find?format=json&location=" + this.zip + "&count=" + this.count + this.puppyKey).then(function(response) {
+          // shelters is an [] of shelters
+          var shelters = response.data["petfinder"]['shelters']['shelter'];
+          // create the map
+          var map;
+          var zoom = 11;
+          if (shelters.length > 15) {
+            zoom = 10;
+          } else if (shelters.length >= 25) {
+            zoom = 9;
+          }
 
-      // grabs the API key for Petfinder from my database
-      axios.get(this.corsUrl + this.puppyUrl + "shelter.find" + this.puppyKey).then(function(response) {
-        // shelters is an [] of shelters
-        var shelters = response.data["petfinder"]['shelters']['shelter'];
-        // create the map
-        var map;
-        var zoom = 11;
-        if (shelters.length > 15) {
-          zoom = 10;
-        } else if (shelters.length >= 25) {
-          zoom = 9;
-        }
-
-        // set the center of the map
-        var center = {lat: parseFloat(shelters[0]['latitude']['$t'], 10), lng: parseFloat(shelters[0]['longitude']['$t'], 10)};
-        map = new google.maps.Map(document.getElementById('googleMaps'), {
-          center: center,
-          zoom: zoom
-        });
-
-        var infowindow = new google.maps.InfoWindow();
-        // sets the variables so I can use them later
-        var marker, i, button;
-
-        // create a marker and corresponding button-tag for each shelter that is returned
-        for (i = 0; i < shelters.length; i++) {
-          // coordinates
-          var lat = parseFloat(shelters[i]['latitude']['$t']);
-          var long = parseFloat(shelters[i]['longitude']['$t']);
-          // creating the button
-          button = document.createElement("A");
-          button.appendChild(document.createTextNode(shelters[i]["name"]["$t"]));
-          button.href = "#/shelters/" + shelters[i]['id']['$t'];
-          document.body.appendChild(button);
-          // Creates and sets the marker
-          marker = new google.maps.Marker({
-            position: new google.maps.LatLng(lat, long),
-            map: map
+          // set the center of the map
+          var center = {lat: parseFloat(shelters[0]['latitude']['$t'], 10), lng: parseFloat(shelters[0]['longitude']['$t'], 10)};
+          map = new google.maps.Map(document.getElementById('googleMaps'), {
+            center: center,
+            zoom: zoom
           });
 
-          // When a marker is clicked, it will display the name of the facility, which can be clicked to go to shelter show page
-          google.maps.event.addListener(marker, 'click', (function(marker, i, button) {
-            return function() {
-              infowindow.setContent(button);
-              infowindow.open(map, marker);
-            };
-          })(marker, i, button));
-        }
-      });
+          var infowindow = new google.maps.InfoWindow();
+          // sets the variables so I can use them later
+          var marker, i, button;
+          var length = shelters.length;
+
+          // create a marker and corresponding button-tag for each shelter that is returned
+          for (i = 0; i < length; i++) {
+            // coordinates
+            var lat = parseFloat(shelters[i]['latitude']['$t']);
+            var long = parseFloat(shelters[i]['longitude']['$t']);
+            // creating the button
+            button = document.createElement("A");
+            button.appendChild(document.createTextNode(shelters[i]["name"]["$t"]));
+            button.href = "#/shelters/" + shelters[i]['id']['$t'];
+            document.body.appendChild(button);
+            // Creates and sets the marker
+            marker = new google.maps.Marker({
+              position: new google.maps.LatLng(lat, long),
+              label: i.toString(),
+              map: map
+            });
+
+            // When a marker is clicked, it will display the name of the facility, which can be clicked to go to shelter show page
+            google.maps.event.addListener(marker, 'mouseover', (function(marker, i, button) {
+              return function() {
+                infowindow.setContent(button);
+                infowindow.open(map, marker);
+              };
+            })(marker, i, button));
+          }
+        }.bind(this));
+      } else {
+        this.errors = [];
+        this.errors.push({error: "Please select a count"});
+      }
     }
   },
   computed: {
@@ -442,31 +452,11 @@ var ShelterShowPage = {
   data: function() {
     return {
       message: "Welcome to Vue.js!",
-      petsHere: 0,
       corsUrl: "https://cors-anywhere.herokuapp.com/",
-      puppyKey: "?format=json&id=" + this.$route.params.id,
+      puppyKey: "?format=json&output=full&id=" + this.$route.params.id,
       puppyUrl: "http://api.petfinder.com/",
       shelter: [],
-      pets: [
-        {pet:{
-          age:{},
-          animal:{},
-          breed:{},
-          contact:{},
-          desctription:{},
-          id:{},
-          media:{
-            photos:{
-              photo:[{}]
-            }
-          },
-          mix:{},
-          name:{},
-          options:{},
-          sex:{},
-          size:{},
-          status:{}
-        }}]
+      pets: []
 
     };
   },
@@ -476,31 +466,54 @@ var ShelterShowPage = {
   created: function() {
     axios.get("/users/keys").then(function(response) {
       this.puppyKey = this.puppyKey + "&key=" + response.data.pet_key;
-
-
+      // get the pets available at that shelter
       axios.get(this.corsUrl + this.puppyUrl + "shelter.getPets" + this.puppyKey).then(function(response) {
         this.pets = response.data['petfinder']['pets']['pet'];
-        console.log(response.data['petfinder']['pets']);
-
+        // get Shelter information
         axios.get(this.corsUrl + this.puppyUrl + "shelter.get" + this.puppyKey).then(function(response) {
           this.shelter = response.data['petfinder']['shelter'];
-          console.log(response.data['petfinder']);
+          // errors for shelter.get
         }.bind(this)).catch(function(errors) {
           console.log(errors.response.data.error);
         });
-
-
+        // errors for shelter.getPets
       }.bind(this)).catch(function(errors) {
         console.log(errors.response.data.error);
       });
-
+      // errors for getting apiKeys
     }.bind(this)).catch(function(errors) {
       console.log(errors.response.data.error);
     });
-    this.petsHere = 1;
-    
+
   },
   methods: {
+    petStatus: function(petStatus) {
+      if (petStatus === "A") {
+        return "Adoptable";
+      } else if (petStatus === "H") {
+        return "Holding";
+      } else if (petStatus === "P") {
+        return "Pending";
+      } else if (petStatus === "X") {
+        return "Already Adopted";
+      }
+    },
+    picSize: function(pictures) {
+      // returns the largest 
+      var length = pictures.length;
+      var mainPic = pictures[0]['$t'];
+
+      for (var i = 0 ; i < length; i++) {
+        if (pictures[i]['@size'] === "fpm") {
+          mainPic = pictures[i]['$t'];
+        } else if (pictures[i]['@size'] === "pn") {
+          mainPic = pictures[i]['$t'];         
+        } else if (pictures[i]['@size'] === "x") {
+          mainPic = pictures[i]['$t'];         
+        }
+      }
+      return mainPic;
+    }
   },
   computed: {
   }

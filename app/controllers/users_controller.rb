@@ -28,7 +28,7 @@ class UsersController < ApplicationController
     if current_user
       pet_key = Rails.application.credentials[:PET_KEY].to_s
       google_key = Rails.application.credentials[:GOOGLE_KEY].to_s
-      keys = {pet_key: pet_key, google_key: google_key}
+      keys = {pet_key: pet_key, google_key: google_key, zip: current_user.zip}
       render json: keys.as_json
     else
       render json: {error: "Must be logged in"}
