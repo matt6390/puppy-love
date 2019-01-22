@@ -496,6 +496,8 @@ var ShelterShowPage = {
         return "Pending";
       } else if (petStatus === "X") {
         return "Already Adopted";
+      } else {
+        return "Status Not Found";
       }
     },
     picSize: function(pictures) {
