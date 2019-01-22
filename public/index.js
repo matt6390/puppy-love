@@ -385,6 +385,7 @@ var SheltersSearchPage = {
 
   },
   methods: {
+
     findPuppies: function() {
       var zipTest = /^\d{5}$/;
 
@@ -400,7 +401,6 @@ var SheltersSearchPage = {
           } else if (shelters.length >= 25) {
             zoom = 9;
           }
-
           // set the center of the map
           var center = {lat: parseFloat(shelters[0]['latitude']['$t'], 10), lng: parseFloat(shelters[0]['longitude']['$t'], 10)};
           map = new google.maps.Map(document.getElementById('googleMaps'), {
@@ -426,7 +426,7 @@ var SheltersSearchPage = {
             // Creates and sets the marker
             marker = new google.maps.Marker({
               position: new google.maps.LatLng(lat, long),
-              label: i.toString(),
+              label: "🐶",
               map: map
             });
 
@@ -439,7 +439,7 @@ var SheltersSearchPage = {
             })(marker, i, button));
           }
         }.bind(this));
-      } else {
+      } else { //error handling so I dont call the petfinder database for no reason
         this.errors = [];
         if (!zipTest.test(this.zip) && this.count === "") {
           this.errors.push({error: "Please select a count"});
@@ -496,6 +496,10 @@ var ShelterShowPage = {
 
   },
   methods: {
+    showPet: function(id) {
+      router.push("/pets/" + id);
+      // return "#/pets/" + id;
+    },
     petStatus: function(petStatus) {
       if (petStatus === "A") {
         return "Adoptable";
