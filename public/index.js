@@ -385,8 +385,10 @@ var SheltersSearchPage = {
 
   },
   methods: {
-    findPuppies: function() { 
-      if (this.count !== "") {
+    findPuppies: function() {
+      var zipTest = /^\d{5}$/;
+
+      if (this.count !== "" && zipTest.test(this.zip)) {
         axios.get(this.corsUrl + this.puppyUrl + "shelter.find?format=json&location=" + this.zip + "&count=" + this.count + this.puppyKey).then(function(response) {
           // shelters is an [] of shelters
           var shelters = response.data["petfinder"]['shelters']['shelter'];
@@ -420,7 +422,7 @@ var SheltersSearchPage = {
             button = document.createElement("A");
             button.appendChild(document.createTextNode(shelters[i]["name"]["$t"]));
             button.href = "#/shelters/" + shelters[i]['id']['$t'];
-            document.body.appendChild(button);
+
             // Creates and sets the marker
             marker = new google.maps.Marker({
               position: new google.maps.LatLng(lat, long),
@@ -439,7 +441,14 @@ var SheltersSearchPage = {
         }.bind(this));
       } else {
         this.errors = [];
-        this.errors.push({error: "Please select a count"});
+        if (!zipTest.test(this.zip) && this.count === "") {
+          this.errors.push({error: "Please select a count"});
+          this.errors.push({error: "Enter 5-digit zip"});
+        } else if (this.count === "") {
+          this.errors.push({error: "Please select a count"});
+        } else {
+          this.errors.push({error: "Enter 5-digit zip"});
+        }        
       }
     }
   },
