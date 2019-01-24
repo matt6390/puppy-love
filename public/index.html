@@ -421,14 +421,13 @@
 <template id="shelter-show-page">
   <div class="vue-component">
     <div class="container">
-      <h2>{{ message }}</h2>
+      <h2 v-if="shelter">{{ shelter.name.$t }}</h2>
       <div class="row">
         <div class="col-md-2">
-          Row-2
         </div>
         <div class="col-md-10 see-through">
           <div v-if="pets[0]">
-            <div class="row pets-box">
+            <div class="row">
               <div v-for="pet in pets" class="col-md-3">
                 <div class="card bg-secondary clickable-element" v-on:click="showPet(pet.id.$t)">
                   <div class="card-ribbon message-body card-ribbon-top card-ribbon-left bg-primary text-white">{{pet.age.$t}}</div>
@@ -479,6 +478,52 @@
             <h2>No Animals Found Yet</h2>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="pet-show-page">
+  <div class="vue-component">
+    <div class="container">
+      <div v-if="pet[0]">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card see-through">
+              <img v-if="pet[0]['media']['photos']['photo'][0]" v-bind:src="picSize(pet[0]['media']['photos']['photo'])" class="img-fluid pet-show-img">
+              
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card bg-white">
+              <div class="card-header">
+                <h2>{{ pet[0].name.$t }} is a(n) {{ pet[0].age.$t }} {{animalGender}} {{ pet[0].animal.$t }}</h2>
+              </div>
+              <div class="card-header">
+                <ul id="tabList" class="nav nav-tabs card-header-tabs">
+                  <li id="descriptionTab" v-on:click="changeTabInfo('descriptionTab')" class="nav-item">
+                    <a class="nav-link active">Description</a>
+                  </li>
+                  <li id="contactTab" v-on:click="changeTabInfo('contactTab')" class="nav-item">
+                    <a class="nav-link">Contact</a>
+                  </li>
+                  <li id="breedTab" v-on:click="changeTabInfo('breedTab')" class="nav-item">
+                    <a class="nav-link">Breed Information</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="card-text message-body">
+                  <h6>{{ tabInfo }}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{ pet }}
+      </div>
+      <div v-else>
+        <h3>No Pet Found</h3>
       </div>
     </div>
   </div>

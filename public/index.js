@@ -442,10 +442,10 @@ var SheltersSearchPage = {
       } else { //error handling so I dont call the petfinder database for no reason
         this.errors = [];
         if (!zipTest.test(this.zip) && this.count === "") {
-          this.errors.push({error: "Please select a count"});
+          this.errors.push({error: "Please select an amount"});
           this.errors.push({error: "Enter 5-digit zip"});
         } else if (this.count === "") {
-          this.errors.push({error: "Please select a count"});
+          this.errors.push({error: "Please select an amount"});
         } else {
           this.errors.push({error: "Enter 5-digit zip"});
         }        
@@ -464,7 +464,7 @@ var ShelterShowPage = {
       corsUrl: "https://cors-anywhere.herokuapp.com/",
       puppyKey: "?format=json&output=full&id=" + this.$route.params.id,
       puppyUrl: "http://api.petfinder.com/",
-      shelter: [],
+      shelter: {name:{}},
       pets: []
 
     };
@@ -531,6 +531,103 @@ var ShelterShowPage = {
     }
   },
   computed: {
+  }
+};
+
+var PetShowPage = {
+  template: "#pet-show-page",
+  data: function() {
+    return {
+      message: "Welcome to Vue.js!",
+      corsUrl: "https://cors-anywhere.herokuapp.com/",
+      puppyKey: "?format=json&id=" + this.$route.params.id,
+      puppyUrl: "http://api.petfinder.com/",
+      pet: [],
+      tabInfo: "No Description Available",
+
+    };
+  },
+  mounted: function() {
+    
+  },
+  created: function() {
+    axios.get("/users/keys").then(function(response) {
+      this.puppyKey = this.puppyKey + "&key=" + response.data.pet_key;
+      // get the pets available at that shelter
+      axios.get(this.corsUrl + this.puppyUrl + "pet.get" + this.puppyKey).then(function(response) {
+        this.pet.push(response.data['petfinder']['pet']);
+        this.tabInfo = response.data['petfinder']['pet']['description']['$t'];
+        console.log(this.pet);
+        // Pet.get errors
+      }.bind(this)).catch(function(errors) {
+        console.log(errors.response.data.error);
+      }.bind(this));
+      // errors for getting apiKeys
+    }.bind(this)).catch(function(errors) {
+      console.log(errors.response.data.error);
+      router.push("/login");
+    });
+
+  },
+  methods: {
+    changeTabInfo: function(id) {
+      var tab = document.getElementById(id);
+      var list = document.getElementById('tabList');
+
+      list = list.getElementsByClassName('active');
+      list[0].classList.remove('active');
+      tab.classList.add('active');
+
+      if (id === "descriptionTab") {
+        this.tabInfo = this.pet[0].description.$t;
+      } else if (id === "contactTab") {
+        this.tabInfo = "I am available for adoption at " + this.pet[0].contact.address1.$t + ", in " + this.pet[0].contact.city.$t + ", " + this.pet[0].contact.state.$t + ". Feel free to call us with more questions at " + this.pet[0].contact.phone.$t + ", or send an email to " + this.pet[0].contact.email.$t + ".";
+      } else if (id === "breedTab") {
+        this.tabInfo = "I am a(n) " + this.pet[0].age.$t + " " + this.pet[0].breeds.breed.$t + ". Feel free to call us with more questions at " + this.pet[0].contact.phone.$t + ", or send an email to " + this.pet[0].contact.email.$t + ".";
+      }
+
+    },
+    petStatus: function(petStatus) {
+      if (petStatus === "A") {
+        return "Adoptable";
+      } else if (petStatus === "H") {
+        return "Holding";
+      } else if (petStatus === "P") {
+        return "Pending";
+      } else if (petStatus === "X") {
+        return "Already Adopted";
+      } else {
+        return "Status Not Found";
+      }
+    },
+    picSize: function(pictures) {
+      // returns the largest 
+      var length = pictures.length;
+      var mainPic = pictures[0]['$t'];
+
+      for (var i = 0 ; i < length; i++) {
+        if (pictures[i]['@size'] === "fpm") {
+          mainPic = pictures[i]['$t'];
+        } else if (pictures[i]['@size'] === "pn") {
+          mainPic = pictures[i]['$t'];         
+        } else if (pictures[i]['@size'] === "x") {
+          mainPic = pictures[i]['$t'];         
+        }
+      }
+      return mainPic;
+    }
+  },
+  computed: {
+    animalGender: function() {
+      var gender = this.pet[0].sex.$t;
+      if (gender === "M") {
+        return 'Male';
+      } else if (gender === "F") {
+        return 'Female';
+      } else {
+        return 'confused';
+      }
+    }
   }
 };
 
@@ -638,6 +735,7 @@ var router = new VueRouter({
     { path: "/user-edit", component: UserEditPage },
     { path: "/shelters", component: SheltersSearchPage },
     { path: "/shelters/:id", component: ShelterShowPage },
+    { path: "/pets/:id", component: PetShowPage },
     { path: "/signup", component: SignupPage },
     { path: "/login", component: LoginPage },
     { path: "/logout", component: LogoutPage }
