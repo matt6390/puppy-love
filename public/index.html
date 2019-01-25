@@ -250,7 +250,8 @@
       <div class="row">
         <div class="col-md-4">
           <div class="list-group">
-            <a v-for="conversation in conversations" class="list-group-item list-group-item-action list-group-item-success" v-on:click="loadConversations(conversation.id)"> {{ conversation }}</a>
+            <a v-if="errors[0]" class="list-group-item list-group-item-action list-group-item-danger"> No Conversations Loaded Yet</a>
+            <a v-else v-for="conversation in conversations" class="list-group-item list-group-item-action list-group-item-success" v-on:click="loadConversations(conversation.id)"> {{ conversation }}</a>
           </div>
         </div>
         <div class="col-md-2"></div>
@@ -491,8 +492,8 @@
         <div class="row">
           <div class="col-md-6">
             <div class="card see-through">
-              <img v-if="pet[0]['media']['photos']['photo'][0]" v-bind:src="picSize(pet[0]['media']['photos']['photo'])" class="img-fluid pet-show-img">
-              
+              <img v-if="pet[0]['media']['photos']" v-bind:src="picSize(pet[0]['media']['photos']['photo'])" class="img-fluid pet-show-img">
+              <img v-else src="assets/img/no-img.png" class="img-fluid pet-show-img">
             </div>
           </div>
           <div class="col-md-6">
@@ -514,7 +515,7 @@
                 </ul>
               </div>
               <div class="card-body">
-                <div class="card-text message-body">
+                <div class="card-text message-body pet-show-text">
                   <h6>{{ tabInfo }}</h6>
                 </div>
               </div>

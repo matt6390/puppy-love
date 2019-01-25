@@ -2,7 +2,11 @@ class ConversationsController < ApplicationController
   def index
     @conversations = current_user.conversations
 
-    render "index.json.jbuilder"
+    if @conversations.length > 0
+      render "index.json.jbuilder"
+    else
+      render json: {message: "No Conversations"}, status: :bad_request
+    end
   end
 
   def create

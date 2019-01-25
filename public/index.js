@@ -10,14 +10,12 @@ var HomePage = {
     };
   },
   created: function() {
-    axios.get('/likes').then(function(response) {
-      var params = response.data;
-      axios.get("/users", params).then(function(users) {
-        this.users = users.data;
-      }.bind(this)).catch(function(errors) {
-        console.log(errors.response.data.errors);
-      });
-    }.bind(this));
+    axios.get("/users").then(function(users) {
+      this.users = users.data;
+    }.bind(this)).catch(function(errors) {
+      console.log(errors.response.data.errors);
+      router.push('/login');
+    });
 
   },
   methods: {
@@ -112,7 +110,8 @@ var ConversationsPage = {
       convoId: "",
       outgoingMessage: "",
       conversations: [],
-      messages: []
+      messages: [],
+      errors: []
     };
   },
   created: function() {
@@ -120,8 +119,10 @@ var ConversationsPage = {
       this.conversations = response.data;
       this.myId = response.data[0].you;
     }.bind(this)).catch(function(errors) {
-      console.log(errors.response.data.errors);
-    });
+      this.errors.push(errors.response.data.message);
+      console.log(errors.response.data.message);
+      // router.push('/login');
+    }.bind(this));
   },
   methods: {
     scrollBottom: function() {
@@ -235,6 +236,7 @@ var UserEditPage = {
       }) || response.data.pictures[0];
     }.bind(this)).catch(function(error) {
       console.log(error.response.data.errors);
+      router.push('/login');
     });
   },
   methods: {
@@ -495,6 +497,7 @@ var ShelterShowPage = {
       // errors for getting apiKeys
     }.bind(this)).catch(function(errors) {
       console.log(errors.response.data.error);
+      router.push('/login');
     });
 
   },
@@ -546,7 +549,7 @@ var PetShowPage = {
       puppyKey: "?format=json&id=" + this.$route.params.id,
       puppyUrl: "http://api.petfinder.com/",
       pet: [],
-      tabInfo: "No Description Available",
+      tabInfo: "No Description Available Yet",
 
     };
   },
@@ -559,7 +562,9 @@ var PetShowPage = {
       // get the pets available at that shelter
       axios.get(this.corsUrl + this.puppyUrl + "pet.get" + this.puppyKey).then(function(response) {
         this.pet.push(response.data['petfinder']['pet']);
-        this.tabInfo = response.data['petfinder']['pet']['description']['$t'];
+        if (response.data['petfinder']['pet']['description']['$t']) {
+          this.tabInfo = response.data['petfinder']['pet']['description']['$t'];
+        }
         console.log(this.pet);
         // Pet.get errors
       }.bind(this)).catch(function(errors) {

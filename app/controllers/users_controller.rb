@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  # before_action :authenticate_user
+
   def index
     #gets all users at the s
     @all_users = User.all.where("id != ?", current_user.id)
@@ -31,7 +33,7 @@ class UsersController < ApplicationController
       keys = {pet_key: pet_key, google_key: google_key, zip: current_user.zip}
       render json: keys.as_json
     else
-      render json: {error: "Must be logged in"}
+      render json: {errors: "Must be logged in"}, status: :bad_request
     end
   end
 
