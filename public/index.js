@@ -478,6 +478,9 @@ var ShelterShowPage = {
       // get the pets available at that shelter
       axios.get(this.corsUrl + this.puppyUrl + "shelter.getPets" + this.puppyKey).then(function(response) {
         this.pets = response.data['petfinder']['pets']['pet'];
+        this.pets.forEach(function(pet) {
+          console.log(pet);
+        });
         // get Shelter information
         axios.get(this.corsUrl + this.puppyUrl + "shelter.get" + this.puppyKey).then(function(response) {
           this.shelter = response.data['petfinder']['shelter'];

@@ -465,7 +465,8 @@
                     </a>
                   </div> -->
 
-                  <img v-if="pet['media']['photos']['photo'][0]" v-bind:src="picSize(pet['media']['photos']['photo'])" class="img-fluid puppy-img">
+                  <img v-if="pet['media']['photos']" v-bind:src="picSize(pet['media']['photos']['photo'])" class="img-fluid puppy-img">
+                  <img v-else src="assets/img/no-img.png" class="img-fluid puppy-img">
                   <div class="card-title">
                     <h4>{{ pet.name.$t }}: ({{pet.sex.$t}})</h4>
                     <p class="message-body">{{ petStatus(pet.status.$t) }}</p>
@@ -520,7 +521,6 @@
             </div>
           </div>
         </div>
-        {{ pet }}
       </div>
       <div v-else>
         <h3>No Pet Found</h3>
