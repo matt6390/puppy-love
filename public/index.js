@@ -550,13 +550,12 @@ var PetShowPage = {
       puppyUrl: "http://api.petfinder.com/",
       pet: [],
       tabInfo: "No Description Available Yet",
+      pictures: [],
+      active: 'active'
 
     };
   },
   mounted: function() {
-    
-  },
-  created: function() {
     axios.get("/users/keys").then(function(response) {
       this.puppyKey = this.puppyKey + "&key=" + response.data.pet_key;
       // get the pets available at that shelter
@@ -565,6 +564,10 @@ var PetShowPage = {
         if (response.data['petfinder']['pet']['description']['$t']) {
           this.tabInfo = response.data['petfinder']['pet']['description']['$t'];
         }
+        response.data.petfinder.pet.media.photos.photo.forEach(function(picture) {
+          var pic = {$t: picture.$t};
+          this.pictures.push(pic);
+        }.bind(this));
         console.log(this.pet);
         // Pet.get errors
       }.bind(this)).catch(function(errors) {
@@ -575,6 +578,9 @@ var PetShowPage = {
       console.log(errors.response.data.error);
       router.push("/login");
     });
+    
+  },
+  created: function() {
 
   },
   methods: {
@@ -658,6 +664,7 @@ var LoginPage = {
         .then(function(response) {
           axios.defaults.headers.common["Authorization"] =
             "Bearer " + response.data.jwt;
+          axios.defaults.headers.common['Access-Control-Allow-Origin'] = "*";
           localStorage.setItem("jwt", response.data.jwt);
           router.push("/");
         })
@@ -731,6 +738,7 @@ var SignupPage = {
 var LogoutPage = {
   created: function() {
     axios.defaults.headers.common["Authorization"] = undefined;
+    axios.defaults.headers.common["Access-Control-Allow-Origin"] = undefined;
     localStorage.removeItem("jwt");
     router.push("/login");
   }

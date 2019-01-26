@@ -491,9 +491,55 @@
       <div v-if="pet[0]">
         <div class="row">
           <div class="col-md-6">
-            <div class="card see-through">
+            <!-- <div class="card see-through">
               <img v-if="pet[0]['media']['photos']" v-bind:src="picSize(pet[0]['media']['photos']['photo'])" class="img-fluid pet-show-img">
               <img v-else src="assets/img/no-img.png" class="img-fluid pet-show-img">
+            </div> -->
+
+            <!-- trying to make carousel for all the pets images -->
+            <div id="petPics" class="carousel slide" data-ride="carousel">
+              <ul class="carousel-indicators">
+                <div v-for="(picture, index) in pictures">
+                  <li  v-if="index === 0" data-target="#petPics" :data-slide-to="index" class="active"></li>
+                  <li  v-else data-target="#petPics" :data-slide-to="index"></li>
+                </div>
+              </ul>
+
+              <div class="carousel-inner">
+                  <div v-for="(picture, index) in pictures" v-bind:class="[index === 0 ? active:'']" class="carousel-item">
+                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[index].$t">
+                  </div>
+
+                 <!--  <div v-else class="carousel-item">
+                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[index].$t">
+                  </div> -->
+                  
+
+
+
+
+               <!--  <div class="carousel-item active">
+                  <div class="card see-through">
+                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[0].$t">
+                  </div>
+                </div>
+               <div class="carousel-item">
+                  <div class="card see-through">
+                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[1].$t">
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <div class="card see-through">
+                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[2].$t">
+                  </div>
+                </div> -->
+              </div>
+              <a class="carousel-control-prev" href="#petPics" data-slide="prev">
+                  <span class="carousel-control-prev-icon"></span>
+                </a>
+                <a class="carousel-control-next" href="#petPics" data-slide="next">
+                  <span class="carousel-control-next-icon"></span>
+                </a>
             </div>
           </div>
           <div class="col-md-6">
