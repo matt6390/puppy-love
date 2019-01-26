@@ -427,36 +427,32 @@
         <div class="col-md-2">
         </div>
         <div class="col-md-10 see-through">
+          <!-- once pets are retrieved -->
           <div v-if="pets[0]">
             <div class="row">
+              <!-- For each pet -->
               <div v-for="pet in pets" class="col-md-3">
-                <div class="card bg-secondary clickable-element" v-on:click="showPet(pet.id.$t)">
+                <div class="card bg-secondary clickable-element">
                   <div class="card-ribbon message-body card-ribbon-top card-ribbon-left bg-primary text-white">{{pet.age.$t}}</div>
                   <div class="card-ribbon card-ribbon-top card-ribbon-right bg-dark text-gray">{{pet.animal.$t}}</div>
 
-                  <!-- Carousel of pictures? -->
-                  <!-- <div v-bind:id="pet.id.$t" class="carousel slide" data-ride="carousel">
+
+                  <div :id="pet.id.$t" v-if="pet['media']['photos']" class="carousel slide" data-ride="carousel">
 
                     <ul class="carousel-indicators">
-                      <div v-for="photo in pet['media']['photos']['photo']"  >
-                        <li v-if="photo === pet['media']['photos']['photo'][0]" :data-target="'#' + pet.id.$t" :data-slide-to="pet['media']['photos']['photo'].indexOf(photo)" class="active"></li>
-                        <li v-else :data-target="'#' + pet.id.$t" :data-slide-to="pet['media']['photos']['photo'].indexOf(photo)"></li>
+                      <div v-for="(picture, index) in pet['media']['photos']['photo']">
+                        <li  v-if="index === 0" :data-target="'#' + pet.id.$t" :data-slide-to="index" class="active"></li>
+                        <li  v-else :data-target="'#' + pet.id.$t" :data-slide-to="index"></li>
                       </div>
                     </ul>
 
-                    <div class="carousel-inner">
-                      <div v-for="photo in pet['media']['photos']['photo']">
-
-                        <div v-if="photo === pet['media']['photos']['photo'][0]" class="carousel-item active">
-                          <img v-bind:src="photo['$t']" class="img-fluid puppy-img">
-                        </div>
-
-
-                        <div v-else class="carousel-item">
-                          <img v-bind:src="photo['$t']" class="img-fluid puppy-img">
+                    <div class="carousel-innner"  v-on:click="showPet(pet.id.$t)">
+                      <div v-for="(picture, index) in pet['media']['photos']['photo']" v-bind:class="[index === 0 ? active:'']" class="carousel-item">
+                        <div class="card see-through">
+                          <img class="img-fluid pet-show-img" :src="picture.$t">
                         </div>
                       </div>
-                    </div>
+                    </div>  
 
                     <a class="carousel-control-prev" :href="'#' + pet.id.$t" data-slide="prev">
                       <span class="carousel-control-prev-icon"></span>
@@ -464,9 +460,11 @@
                     <a class="carousel-control-next" :href="'#' + pet.id.$t" data-slide="next">
                       <span class="carousel-control-next-icon"></span>
                     </a>
-                  </div> -->
+                    
+                  </div>
 
-                  <img v-if="pet['media']['photos']" v-bind:src="picSize(pet['media']['photos']['photo'])" class="img-fluid puppy-img">
+
+                  <!-- <img v-if="pet['media']['photos']" v-bind:src="picSize(pet['media']['photos']['photo'])" class="img-fluid puppy-img"> -->
                   <img v-else src="assets/img/no-img.png" class="img-fluid puppy-img">
                   <div class="card-title">
                     <h4>{{ pet.name.$t }}: ({{pet.sex.$t}})</h4>
@@ -491,63 +489,45 @@
       <div v-if="pet[0]">
         <div class="row">
           <div class="col-md-6">
-            <!-- <div class="card see-through">
-              <img v-if="pet[0]['media']['photos']" v-bind:src="picSize(pet[0]['media']['photos']['photo'])" class="img-fluid pet-show-img">
-              <img v-else src="assets/img/no-img.png" class="img-fluid pet-show-img">
-            </div> -->
 
             <!-- trying to make carousel for all the pets images -->
-            <div id="petPics" class="carousel slide" data-ride="carousel">
+            <div v-if="pet[0]['media']['photos']" id="petPics" class="carousel slide" data-ride="carousel">
+              <!-- carousel indicators -->
               <ul class="carousel-indicators">
                 <div v-for="(picture, index) in pictures">
                   <li  v-if="index === 0" data-target="#petPics" :data-slide-to="index" class="active"></li>
                   <li  v-else data-target="#petPics" :data-slide-to="index"></li>
                 </div>
               </ul>
-
+              <!-- Part Of Carousel that contains the picture/the part that changes -->
               <div class="carousel-inner">
                   <div v-for="(picture, index) in pictures" v-bind:class="[index === 0 ? active:'']" class="carousel-item">
-                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[index].$t">
+                    <div class="card see-through">
+                      <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[index].$t">
+                    </div>
                   </div>
-
-                 <!--  <div v-else class="carousel-item">
-                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[index].$t">
-                  </div> -->
-                  
-
-
-
-
-               <!--  <div class="carousel-item active">
-                  <div class="card see-through">
-                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[0].$t">
-                  </div>
-                </div>
-               <div class="carousel-item">
-                  <div class="card see-through">
-                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[1].$t">
-                  </div>
-                </div>
-                <div class="carousel-item">
-                  <div class="card see-through">
-                    <img class="img-fluid pet-show-img" :src="pet[0].media.photos.photo[2].$t">
-                  </div>
-                </div> -->
               </div>
+              <!-- controls for the carousel -->
               <a class="carousel-control-prev" href="#petPics" data-slide="prev">
-                  <span class="carousel-control-prev-icon"></span>
-                </a>
-                <a class="carousel-control-next" href="#petPics" data-slide="next">
-                  <span class="carousel-control-next-icon"></span>
-                </a>
+                <span class="carousel-control-prev-icon"></span>
+              </a>
+              <a class="carousel-control-next" href="#petPics" data-slide="next">
+                <span class="carousel-control-next-icon"></span>
+              </a>
+            </div>
+            <!-- Only loaded if there are no picture to be placed in the carousel -->
+            <div v-else class="card see-through">
+              <img src="assets/img/no-img.png" class="img-fluid pet-show-img">
             </div>
           </div>
+          <!-- Pet information -->
           <div class="col-md-6">
             <div class="card bg-white">
               <div class="card-header">
                 <h2>{{ pet[0].name.$t }} is a(n) {{ pet[0].age.$t }} {{animalGender}} {{ pet[0].animal.$t }}</h2>
               </div>
               <div class="card-header">
+                <!-- tabs to change through the displayed info -->
                 <ul id="tabList" class="nav nav-tabs card-header-tabs">
                   <li id="descriptionTab" v-on:click="changeTabInfo('descriptionTab')" class="nav-item">
                     <a class="nav-link active">Description</a>
@@ -569,6 +549,7 @@
           </div>
         </div>
       </div>
+      <!-- Shown until a Pet is retrieved by the database -->
       <div v-else>
         <h3>No Pet Found</h3>
       </div>

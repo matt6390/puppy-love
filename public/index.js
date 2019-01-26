@@ -467,7 +467,8 @@ var ShelterShowPage = {
       puppyKey: "?format=json&output=full&id=" + this.$route.params.id,
       puppyUrl: "http://api.petfinder.com/",
       shelter: {name:{}},
-      pets: []
+      pets: [],
+      active: 'active'
 
     };
   },
@@ -561,17 +562,20 @@ var PetShowPage = {
       // get the pets available at that shelter
       axios.get(this.corsUrl + this.puppyUrl + "pet.get" + this.puppyKey).then(function(response) {
         this.pet.push(response.data['petfinder']['pet']);
+        // makes sure that there is an inital description
         if (response.data['petfinder']['pet']['description']['$t']) {
           this.tabInfo = response.data['petfinder']['pet']['description']['$t'];
         }
-        response.data.petfinder.pet.media.photos.photo.forEach(function(picture) {
-          var pic = {$t: picture.$t};
-          this.pictures.push(pic);
-        }.bind(this));
-        console.log(this.pet);
+        // checks to see if there are pictures, and sets them up for the carousel to be made
+        if (response.data['petfinder']['pet']['media']['photos']) {
+          response.data.petfinder.pet.media.photos.photo.forEach(function(picture) {
+            var pic = {$t: picture.$t};
+            this.pictures.push(pic);
+          }.bind(this));
+        }
         // Pet.get errors
       }.bind(this)).catch(function(errors) {
-        console.log(errors.response.data.error);
+        console.log(errors);
       }.bind(this));
       // errors for getting apiKeys
     }.bind(this)).catch(function(errors) {
@@ -598,6 +602,8 @@ var PetShowPage = {
         this.tabInfo = "I am available for adoption at " + this.pet[0].contact.address1.$t + ", in " + this.pet[0].contact.city.$t + ", " + this.pet[0].contact.state.$t + ". Feel free to call us with more questions at " + this.pet[0].contact.phone.$t + ", or send an email to " + this.pet[0].contact.email.$t + ".";
       } else if (id === "breedTab") {
         this.tabInfo = "I am a(n) " + this.pet[0].age.$t + " " + this.pet[0].breeds.breed.$t + ". Feel free to call us with more questions at " + this.pet[0].contact.phone.$t + ", or send an email to " + this.pet[0].contact.email.$t + ".";
+      } else {
+        this.tabInfo = "We're sorry, but that information is not available yet.";
       }
 
     },
@@ -611,7 +617,7 @@ var PetShowPage = {
       } else if (petStatus === "X") {
         return "Already Adopted";
       } else {
-        return "Status Not Found";
+        return "Status Not Available";
       }
     },
     picSize: function(pictures) {
