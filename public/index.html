@@ -36,8 +36,6 @@
   <link href='http://fonts.googleapis.com/css?family=Rambla:400,700' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Calligraffitti' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700' rel='stylesheet' type='text/css'>
-  <!-- Google Maps -->
-  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3nW20txucLzHPDuhf1_HMYxjKNqBQjMM&callback=createMap" async defer></script> -->
   <!--Plugin: Retina.js (high def image replacement) - @see: http://retinajs.com/-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
   <!-- Firebase Scripts -->
@@ -426,7 +424,7 @@
       <div class="row">
         <div class="col-md-2">
         </div>
-        <div class="col-md-10 see-through">
+        <div class="col-md-10 ">
           <!-- once pets are retrieved -->
           <div v-if="pets[0]">
             <div class="row">
@@ -439,17 +437,17 @@
 
                   <div :id="pet.id.$t" v-if="pet['media']['photos']" class="carousel slide" data-ride="carousel">
 
-                    <ul class="carousel-indicators">
+                   <!--  <ul class="carousel-indicators">
                       <div v-for="(picture, index) in pet['media']['photos']['photo']">
                         <li  v-if="index === 0" :data-target="'#' + pet.id.$t" :data-slide-to="index" class="active"></li>
                         <li  v-else :data-target="'#' + pet.id.$t" :data-slide-to="index"></li>
                       </div>
-                    </ul>
+                    </ul> -->
 
                     <div class="carousel-innner"  v-on:click="showPet(pet.id.$t)">
                       <div v-for="(picture, index) in pet['media']['photos']['photo']" v-bind:class="[index === 0 ? active:'']" class="carousel-item">
                         <div class="card see-through">
-                          <img class="img-fluid pet-show-img" :src="picture.$t">
+                          <img class="img-fluid puppy-img" :src="picture.$t">
                         </div>
                       </div>
                     </div>  
@@ -552,6 +550,17 @@
       <!-- Shown until a Pet is retrieved by the database -->
       <div v-else>
         <h3>No Pet Found</h3>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="test-call-page">
+  <div class="vue-component">
+    <div class="container">
+      <div class="row">
+        {{ message }}
+        <button class="btn btn-primary btn-rounded" v-on:click="callShelter()">Call the shelter</button>
       </div>
     </div>
   </div>

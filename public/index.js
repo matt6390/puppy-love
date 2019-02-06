@@ -651,6 +651,34 @@ var PetShowPage = {
   }
 };
 
+var TestCallPage = {
+  template: "#test-call-page",
+  data: function() {
+    return {
+      message: "test"
+    };
+  },
+  created: function() {
+
+  },
+  methods: {
+    callShelter: function() {
+      var params = {
+        myNum: "+18474204201",
+        theirNum: "+18477246958"
+      };
+      axios.post("/users/call", params).then(function(response) {
+        console.log(response.data);
+      }.bind(this)).catch(function(errors) {
+        console.log(errors.response.data.error);
+      });
+    }
+  },
+  computed:{
+
+  }
+};
+
 var LoginPage = {
   template: "#login-page",
   data: function() {
@@ -758,6 +786,7 @@ var router = new VueRouter({
     { path: "/shelters", component: SheltersSearchPage },
     { path: "/shelters/:id", component: ShelterShowPage },
     { path: "/pets/:id", component: PetShowPage },
+    { path: "/test", component: TestCallPage },
     { path: "/signup", component: SignupPage },
     { path: "/login", component: LoginPage },
     { path: "/logout", component: LogoutPage }

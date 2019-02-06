@@ -1,3 +1,4 @@
+require 'twilio-ruby'
 class UsersController < ApplicationController
   # before_action :authenticate_user
 
@@ -35,6 +36,35 @@ class UsersController < ApplicationController
     else
       render json: {errors: "Must be logged in"}, status: :bad_request
     end
+  end
+
+  def call
+    account_sid = Rails.application.credentials[:TWILIO_TEST_ACCOUNT_SID]
+    p account_sid
+    auth_token = Rails.application.credentials[:TWILIO_TEST_AUTH_TOKEN]
+    p auth_token
+    @client = Twilio::REST::Client.new(account_sid, auth_token)
+
+    call = @client.calls.create(
+      to: params[:myNum],
+      from: Rails.application.credentials[:PUPPY_PHONE],
+      url: "https://6fbc75b0.ngrok.io/users/connect/#{params[:theirNum]}")
+
+    render json: {message: "Call Incoming"}
+  end
+
+  def connect
+    # Our response to this request will be an XML document in the "TwiML"
+    # format. Our Ruby library provides a helper for generating one
+    # of these documents
+    response = Twilio::TwiML::VoiceResponse.new do |r|
+      # r.say("Dialing the shelter now")
+      r.dial number: params[:id]
+    end
+
+
+    render xml: response.to_s
+    
   end
 
   def show

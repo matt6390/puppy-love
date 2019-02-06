@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   get "/users/keys" => 'users#keys'
   get "/users/:id" => 'users#show'
   post "/users" => 'users#create'
+  post "/users/call" => 'users#call'
+  post "/users/connect/:id" => 'users#connect'
   patch "/users/:id" => 'users#update'
   delete "/users/:id" => 'users#destroy'
 
