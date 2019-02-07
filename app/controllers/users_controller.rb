@@ -40,15 +40,15 @@ class UsersController < ApplicationController
 
   def call
     account_sid = Rails.application.credentials[:TWILIO_TEST_ACCOUNT_SID]
-    p account_sid
+    # p account_sid
     auth_token = Rails.application.credentials[:TWILIO_TEST_AUTH_TOKEN]
-    p auth_token
+    # p auth_token
     @client = Twilio::REST::Client.new(account_sid, auth_token)
 
     call = @client.calls.create(
       to: params[:myNum],
       from: Rails.application.credentials[:PUPPY_PHONE],
-      url: "https://6fbc75b0.ngrok.io/users/connect/#{params[:theirNum]}")
+      url: "https://c197ed37.ngrok.io/users/connect/#{params[:theirNum]}")
 
     render json: {message: "Call Incoming"}
   end
@@ -58,13 +58,11 @@ class UsersController < ApplicationController
     # format. Our Ruby library provides a helper for generating one
     # of these documents
     response = Twilio::TwiML::VoiceResponse.new do |r|
-      # r.say("Dialing the shelter now")
-      r.dial number: params[:id]
+      r.say(message: 'Now connecting you to the provided shelter. Please wait patiently to be connected')
+      # r.dial number: params[:id]
     end
 
-
     render xml: response.to_s
-    
   end
 
   def show
