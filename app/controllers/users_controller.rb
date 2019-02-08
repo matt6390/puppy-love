@@ -58,7 +58,7 @@ class UsersController < ApplicationController
     # format. Our Ruby library provides a helper for generating one
     # of these documents
     response = Twilio::TwiML::VoiceResponse.new do |r|
-      r.say(message: 'Now connecting you to the provided shelter. Please wait patiently to be connected')
+      r.say(message: 'Now connecting you to the provided shelter. Please wait patiently to be connected', voice: 'alice')
       # r.dial number: params[:id]
     end
 
