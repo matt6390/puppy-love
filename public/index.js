@@ -466,7 +466,7 @@ var ShelterShowPage = {
       corsUrl: "https://cors-anywhere.herokuapp.com/",
       puppyKey: "?format=json&output=full&id=" + this.$route.params.id,
       puppyUrl: "http://api.petfinder.com/",
-      shelter: {name:{}},
+      shelter: {name:{}, phone:{}},
       pets: [],
       active: 'active'
 
@@ -482,7 +482,6 @@ var ShelterShowPage = {
       axios.get(this.corsUrl + this.puppyUrl + "shelter.getPets" + this.puppyKey).then(function(response) {
         this.pets = response.data['petfinder']['pets']['pet'];
         this.pets.forEach(function(pet) {
-          console.log(pet);
         });
         // get Shelter information
         axios.get(this.corsUrl + this.puppyUrl + "shelter.get" + this.puppyKey).then(function(response) {
@@ -503,6 +502,41 @@ var ShelterShowPage = {
 
   },
   methods: {
+    phoneConvert: function(number) {
+      var newString = number.match(/[0-9]{0,14}/g);
+
+      if (newString === null) {
+        return '';
+      }
+
+      // Join parts returned from RegEx match
+      newString = newString.join('');
+
+      // Start number with "+"
+      // newString = '+' + newString;
+
+      if (newString[0].includes('1')) { 
+        newString = '+' + newString; 
+      } else { 
+        newString = '+1' + newString;
+      }
+
+      // Limit length to 15 characters
+      newString = newString.substring(0, 15);
+
+      // console.log(newString.toString());
+      return newString.toString();
+    },
+    callShelter: function(num) {
+      var button = document.getElementById('callShelter');
+      button.disabled = true;
+
+      var params = {
+        thierNum: this.phoneConvert(num),
+        myNum: "+18474204201"
+      };
+      console.log(params);
+    },
     showPet: function(id) {
       router.push("/pets/" + id);
       // return "#/pets/" + id;
@@ -662,10 +696,36 @@ var TestCallPage = {
 
   },
   methods: {
+    phoneConvert: function(number) {
+      var newString = number.match(/[0-9]{0,14}/g);
+
+      if (newString === null) {
+        return '';
+      }
+
+      // Join parts returned from RegEx match
+      newString = newString.join('');
+
+      // Start number with "+"
+      // newString = '+' + newString;
+
+      if (newString[0].includes('1')) { 
+        newString = '+' + newString; 
+      } else { 
+        newString = '+1' + newString;
+      }
+
+      // Limit length to 15 characters
+      newString = newString.substring(0, 15);
+
+      // console.log(newString.toString());
+      return newString.toString();
+    },
+
     callShelter: function() {
       var params = {
         myNum: "+18474204201",
-        theirNum: "+18477246958"
+        theirNum: this.phoneConvert("(847) 724-6958")
       };
       axios.post("/users/call", params).then(function(response) {
         console.log(response.data);

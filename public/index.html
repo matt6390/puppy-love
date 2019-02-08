@@ -423,6 +423,10 @@
       <h2 v-if="shelter">{{ shelter.name.$t }}</h2>
       <div class="row">
         <div class="col-md-2">
+          <!-- If there is a number we can call, give the option to call them -->
+          <button v-if="shelter['phone']['$t']" id="callShelter" v-on:click="callShelter(shelter['phone']['$t'])" class="btn btn-primary btn-rounded">{{ shelter.phone.$t }}</button>
+          <!-- shown when there is no number to call -->
+          <button v-else class="btn btn-primary btn-rounded">No Phone # Found</button>
         </div>
         <div class="col-md-10 ">
           <!-- once pets are retrieved -->
@@ -430,11 +434,14 @@
             <div class="row">
               <!-- For each pet -->
               <div v-for="pet in pets" class="col-md-3">
+                <!-- A personal/bordered card -->
                 <div class="card bg-secondary clickable-element">
+                  <!-- Age -->
                   <div class="card-ribbon message-body card-ribbon-top card-ribbon-left bg-primary text-white">{{pet.age.$t}}</div>
+                  <!-- Type of animal -->
                   <div class="card-ribbon card-ribbon-top card-ribbon-right bg-dark text-gray">{{pet.animal.$t}}</div>
 
-
+                  <!-- Carousle with all the pictures of the animals, if available -->
                   <div :id="pet.id.$t" v-if="pet['media']['photos']" class="carousel slide" data-ride="carousel">
 
                    <!--  <ul class="carousel-indicators">
@@ -458,12 +465,10 @@
                     <a class="carousel-control-next" :href="'#' + pet.id.$t" data-slide="next">
                       <span class="carousel-control-next-icon"></span>
                     </a>
-                    
                   </div>
-
-
-                  <!-- <img v-if="pet['media']['photos']" v-bind:src="picSize(pet['media']['photos']['photo'])" class="img-fluid puppy-img"> -->
+                  <!-- Shown only when a carousel is not created -->
                   <img v-else src="assets/img/no-img.png" class="img-fluid puppy-img">
+                  <!-- Information for the animal -->
                   <div class="card-title">
                     <h4>{{ pet.name.$t }}: ({{pet.sex.$t}})</h4>
                     <p class="message-body">{{ petStatus(pet.status.$t) }}</p>
@@ -472,6 +477,7 @@
               </div>
             </div>
           </div>
+          <!-- Shown until the animals are retrieved from database -->
           <div v-else class="row">
             <h2>No Animals Found Yet</h2>
           </div>

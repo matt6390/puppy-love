@@ -59,7 +59,7 @@ class UsersController < ApplicationController
     # of these documents
     response = Twilio::TwiML::VoiceResponse.new do |r|
       r.say(message: 'Now connecting you to the provided shelter. Please wait patiently to be connected', voice: 'alice')
-      # r.dial number: params[:id]
+      r.dial number: params[:id]
     end
 
     render xml: response.to_s
